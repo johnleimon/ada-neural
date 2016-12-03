@@ -36,7 +36,6 @@ package body NN.Transfer is
 
    function Hard_Limit (input : Float) return Float is
    begin
--- put_line("hardlim(" & float'image(input) & ")");
       if input >= 0.0 then                          
          return 1.0;
       else
