@@ -27,19 +27,27 @@ with Ada.Containers.Indefinite_Vectors; use Ada.Containers;
 with Ada.Text_IO;                       use Ada.Text_IO;
 
 procedure Main is
-   use Neuron_Input_Vectors;
-   N      : Neuron_Type;
-   Result : Float;
+
+   procedure Demo_Single_Neuron_Firing is
+      use Neuron_Input_Vectors;
+      N      : Neuron_Type;
+      Result : Float;
+   begin
+      Put("Single Neuron -- Weights: [1.0, 0.5] Inputs: [0.1, 0.2] ");
+      N.Transfer := satlin'access;
+
+      -- Configure neuron for two inputs --
+      N.Input_Weights.Append(1.0);
+      N.Input_Weights.Append(0.5);
+      N.Bias := 0.0;
+
+      Result := Fire(N, (0.1, 0.2));
+
+      Put_Line("Result : " & Float'image(Result));
+   end Demo_Single_Neuron_Firing;
+
 begin
-   N.Transfer := satlin'access;
 
-   -- Configure neuron for two inputs --
-   N.Input_Weights.Append(1.0);
-   N.Input_Weights.Append(0.5);
-   N.Bias := 0.0;
-
-   Result := Fire(N, (0.1, 0.2));
-
-   Put_Line("Result : " & Float'image(Result));
+   Demo_Single_Neuron_Firing;
 
 end Main;
