@@ -1,6 +1,6 @@
 -----------------------------------------------------------------
 --                                                             --
--- Nerual Network Transfer Functions                           --
+-- Neural Network Transfer Functions                           --
 --                                                             --
 -- Copyright (c) 2016, John Leimon                             --
 --                                                             --

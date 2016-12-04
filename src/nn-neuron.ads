@@ -1,6 +1,6 @@
 -----------------------------------------------------------------
 --                                                             --
--- Neruon Specification                                        --
+-- Neuron Specification                                        --
 --                                                             --
 -- Copyright (c) 2016, John Leimon                             --
 --                                                             --
