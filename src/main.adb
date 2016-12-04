@@ -32,11 +32,13 @@ procedure Main is
    -- Demo_Single_Neuron_Firing --
    -------------------------------
 
-   procedure Demo_Single_Neuron_Firing is
+   procedure Demo_Single_Neuron_Firing
+   is
       Neuron : Neuron_Type;
       Result : Float;
    begin
-      Put("Single Neuron -- Weights: [1.0, 0.5] Inputs: [0.1, 0.2] ");
+      Put_Line("Single Neuron");
+      Put_Line("   Weights: [1.0, 0.5] Inputs: [0.1, 0.2] ");
       Neuron.Transfer := satlin'access;
 
       -- Configure neuron for two inputs --
@@ -46,18 +48,19 @@ procedure Main is
 
       Result := Fire(Neuron, (0.1, 0.2));
 
-      Put_Line("Result : " & Float'image(Result));
+      Put_Line("   Result : " & Float'image(Result));
    end Demo_Single_Neuron_Firing;
 
    -------------------------------------
    -- Demo_Multi_Layer_Network_Firing --
    -------------------------------------
 
-   procedure Demo_Multi_Layer_Network_Firing is
+   procedure Demo_Multi_Layer_Network_Firing
+   is
       Network : Multi_Layer_Neural_Network.Vector;
    begin
 
-      Put("Multi-layer -- ");
+      Put_Line("Multi-layer:");
 
       -- Create a two layer neural network with two --
       -- neurons per layer.                         --
@@ -75,16 +78,45 @@ procedure Main is
       declare
          Result : Float_Array := Fire(Network, (0.1, 0.2));
       begin
-         Put_Line("Result : " &
+         Put_Line("   Result : " &
                   Float'image(Result(1)) & ", " &
                   Float'image(Result(2)));
       end;
 
    end Demo_Multi_Layer_Network_Firing;
 
+   ----------------------
+   -- Demo_Delay_Block --
+   ----------------------
+
+   procedure Demo_Delay_Block
+   is
+      Initial_State : Float_Array := (0.1, 0.2);
+      Input         : Float_Array := (2.0, 3.0);
+      Output        : Float_Array := (0.0, 0.0);
+      Block         : Delay_Block := Create_Delay_Block(Initial_State);
+   begin
+
+      Put_Line("Delay Block:");
+
+      Fire(Block, Input, Output);
+
+      Put_Line("   1st Fire output: [" &
+               Float'image(Output(0)) & ", " &
+               Float'image(Output(1)) & "]");
+
+      Fire(Block, Input, Output);
+
+      Put_Line("   2nd Fire output: [" &
+               Float'image(Output(0)) & ", " &
+               Float'image(Output(1)) & "]");
+
+   end Demo_Delay_Block;
+
 begin
 
    Demo_Single_Neuron_Firing;
    Demo_Multi_Layer_Network_Firing;
+   Demo_Delay_Block;
 
 end Main;

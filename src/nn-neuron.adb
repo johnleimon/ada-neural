@@ -57,6 +57,21 @@ package body NN.Neuron is
 
    end Create_Layer;
 
+   ------------------------
+   -- Create_Delay_Block --
+   ------------------------
+
+   function Create_Delay_Block (Initial_State : Float_Array) return Delay_Block
+   is
+      Output : Delay_Block;
+   begin
+      for I in Integer range Initial_State'range loop
+         Output.Memory.Append(Initial_State(I));
+      end loop;
+
+      return Output;
+   end Create_Delay_Block;
+
    ----------
    -- Fire --
    ----------
@@ -121,6 +136,22 @@ package body NN.Neuron is
       end loop;
 
       return Output;
+   end Fire;
+
+   ----------
+   -- Fire --
+   ----------
+
+   procedure Fire (Block  : in out Delay_Block;
+                   Input  : in     Float_Array;
+                   Output : out    Float_Array)
+   is
+      use Float_Vectors;
+   begin
+      for Index in Natural range 0 .. Natural(Block.Memory.Length) - 1 loop
+         Output(Output'First + Index) := Block.Memory(Index);
+         Block.Memory.Replace_Element(Index, Input(Input'First + Index));
+      end loop;
    end Fire;
 
 end NN.Neuron;

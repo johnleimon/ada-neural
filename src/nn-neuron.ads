@@ -35,11 +35,15 @@ package NN.Neuron is
       Transfer      : Transfer_Function;
    end record;
 
+   type Delay_Block is private;
+
    package Neuron_Layers is new Indefinite_Vectors (Natural, Neuron_Type);
 
    use Neuron_Layers;
 
    package Multi_Layer_Neural_Network is new Indefinite_Vectors(Natural, Neuron_Layers.Vector);
+
+   function Create_Delay_Block (Initial_State : Float_Array) return Delay_Block;
 
    function Create_Layer (Number_Of_Inputs  : Natural;
                           Number_Of_Neurons : Natural;
@@ -53,5 +57,14 @@ package NN.Neuron is
                   Input  : Float_Array) return Float_Array;
    function Fire (Network : Multi_Layer_Neural_Network.Vector;
                   Input   : Float_Array) return Float_Array;
+   procedure Fire (Block  : in out Delay_Block;
+                   Input  : in     Float_Array;
+                   Output : out    Float_Array);
+
+private
+
+   type Delay_Block is record
+      Memory : Float_Vectors.Vector;
+   end record;
 
 end NN.Neuron;
