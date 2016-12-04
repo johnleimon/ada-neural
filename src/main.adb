@@ -28,26 +28,63 @@ with Ada.Text_IO;                       use Ada.Text_IO;
 
 procedure Main is
 
+   -------------------------------
+   -- Demo_Single_Neuron_Firing --
+   -------------------------------
+
    procedure Demo_Single_Neuron_Firing is
-      use Neuron_Input_Vectors;
-      N      : Neuron_Type;
+      Neuron : Neuron_Type;
       Result : Float;
    begin
       Put("Single Neuron -- Weights: [1.0, 0.5] Inputs: [0.1, 0.2] ");
-      N.Transfer := satlin'access;
+      Neuron.Transfer := satlin'access;
 
       -- Configure neuron for two inputs --
-      N.Input_Weights.Append(1.0);
-      N.Input_Weights.Append(0.5);
-      N.Bias := 0.0;
+      Neuron.Input_Weights.Append(1.0);
+      Neuron.Input_Weights.Append(0.5);
+      Neuron.Bias := 0.0;
 
-      Result := Fire(N, (0.1, 0.2));
+      Result := Fire(Neuron, (0.1, 0.2));
 
       Put_Line("Result : " & Float'image(Result));
    end Demo_Single_Neuron_Firing;
 
+   -------------------------------------
+   -- Demo_Multi_Layer_Network_Firing --
+   -------------------------------------
+
+   procedure Demo_Multi_Layer_Network_Firing is
+      Network : Multi_Layer_Neural_Network.Vector;
+   begin
+
+      Put("Multi-layer -- ");
+
+      -- Create a two layer neural network with two --
+      -- neurons per layer.                         --
+      Network.Append(Create_Layer(Number_Of_Inputs  => 2,
+                                  Number_Of_Neurons => 2,
+                                  Transfer          => satlin'access,
+                                  Input_Weight      => 1.0,
+                                  Bias              => 0.0));
+      Network.Append(Create_Layer(Number_Of_Inputs  => 2,
+                                  Number_Of_Neurons => 2,
+                                  Transfer          => satlin'access,
+                                  Input_Weight      => 1.0,
+                                  Bias              => 0.0));
+
+      declare
+         Result : Float_Array := Fire(Network, (0.1, 0.2));
+      begin
+         Put_Line("Result : " &
+                  Float'image(Result(1)) & ", " &
+                  Float'image(Result(2)));
+      end;
+
+   end Demo_Multi_Layer_Network_Firing;
+
 begin
 
    Demo_Single_Neuron_Firing;
+   Demo_Multi_Layer_Network_Firing;
 
 end Main;

@@ -27,19 +27,31 @@ package NN.Neuron is
 
    type Float_Array is array (Natural range <>) of Float;
 
-   package Neuron_Input_Vectors is new Indefinite_Vectors (Natural, Float);
+   package Float_Vectors is new Indefinite_Vectors (Natural, Float);
 
    type Neuron_Type is record
       Bias          : Float;
-      Input_Weights : Neuron_Input_Vectors.Vector;
+      Input_Weights : Float_Vectors.Vector;
       Transfer      : Transfer_Function;
    end record;
 
    package Neuron_Layers is new Indefinite_Vectors (Natural, Neuron_Type);
 
+   use Neuron_Layers;
+
+   package Multi_Layer_Neural_Network is new Indefinite_Vectors(Natural, Neuron_Layers.Vector);
+
+   function Create_Layer (Number_Of_Inputs  : Natural;
+                          Number_Of_Neurons : Natural;
+                          Transfer          : Transfer_Function;
+                          Input_Weight      : Float := 1.0;
+                          Bias              : Float := 0.0) return Neuron_Layers.Vector;
+
    function Fire (Neuron : Neuron_Type;
                   Input  : Float_Array) return Float;
    function Fire (Layer  : Neuron_Layers.Vector;
                   Input  : Float_Array) return Float_Array;
+   function Fire (Network : Multi_Layer_Neural_Network.Vector;
+                  Input   : Float_Array) return Float_Array;
 
 end NN.Neuron;
