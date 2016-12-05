@@ -35,6 +35,14 @@ package body NN.Neuron is
 put_line(natural'image(Layer.Weights'Length(Weight_Index)) & " x " &
          natural'image(Layer.Weights'Length(Neuron_Index)));
 
+      for N in Layer.Weights'range(Neuron_Index) loop
+         for W in Layer.Weights'range(Weight_Index) loop
+
+            Put_Line(Float'image(Layer.Weights(N, W)));
+
+         end loop;
+      end loop;
+
    end Fire;
 
 end NN.Neuron;

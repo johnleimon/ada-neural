@@ -1,0 +1,7 @@
+
+  Notes and References
+  --------------------
+
+  Two Dimensional Matrixes
+     
+     https://rosettacode.org/wiki/Polynomial_regression#Ada
