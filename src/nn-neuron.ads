@@ -48,9 +48,9 @@ package NN.Neuron is
                    Output : out Float_Array)
    with Pre => Output'Length = Layer.Weights'Length(Neuron_Index);
 
- --  procedure Fire (Network : in  Neural_Network;
- --                  Input   : in  Float_Array;
- --                  Output  : out Float_Array)
- --  with Pre => Output'Length = Network(Network'First).Weights'Length(Neuron_Index);
+   procedure Fire (Network : in  Neural_Network;
+                   Input   : in  Float_Array;
+                   Output  : out Float_Array)
+   with Pre => Output'Length = Network(Network'First).Weights'Length(Neuron_Index);
 
 end NN.Neuron;
