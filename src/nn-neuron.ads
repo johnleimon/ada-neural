@@ -43,6 +43,8 @@ package NN.Neuron is
 
    type Neural_Network is array (Natural range <>) of Neural_Layer;
 
+   type Delay_Block is new Float_Array;
+
    procedure Fire (Layer  : in  Neural_Layer;
                    Input  : in  Float_Array;
                    Output : out Float_Array)
@@ -52,5 +54,11 @@ package NN.Neuron is
                    Input   : in  Float_Array;
                    Output  : out Float_Array)
    with Pre => Output'Length = Network(Network'First).Weights'Length(Neuron_Index);
+
+   procedure Fire (Block  : in out Delay_Block;
+                   Input  : in     Float_Array;
+                   Output : out    Float_Array)
+   with Pre => Block'Length = Input'Length and
+               Input'Length = Output'Length;
 
 end NN.Neuron;

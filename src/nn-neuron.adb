@@ -65,4 +65,17 @@ put_line(natural'image(Layer.Weights'Length(Weight_Index)) & " x" &
       end loop;
    end Fire;
 
+   ----------
+   -- Fire --
+   ----------
+
+   procedure Fire (Block  : in out Delay_Block;
+                   Input  : in     Float_Array;
+                   Output : out    Float_Array)
+   is
+   begin
+      Output := Float_Array(Block);
+      Block  := Delay_Block(Input);
+   end Fire;
+
 end NN.Neuron;
