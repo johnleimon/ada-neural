@@ -24,6 +24,10 @@ with Ada.Text_IO; use Ada.Text_IO;
 
 package body NN.Neuron is
 
+   ----------
+   -- Fire --
+   ----------
+
    procedure Fire (Layer  : in  Neural_Layer;
                    Input  : in  Float_Array;
                    Output : out Float_Array)
@@ -43,6 +47,7 @@ package body NN.Neuron is
             Weight      := Layer.Weights(N,I);
             Sum         := Sum + Input(Input_Index) * Weight;
             Input_Index := Input_Index + 1;
+
          end loop;
          
          Sum                  := Sum + Layer.Bias(Neuron_Index);
@@ -51,6 +56,35 @@ package body NN.Neuron is
          Neuron_Index         := Neuron_Index + 1;
          
       end loop;
-      
+   end Fire;
+
+   ----------
+   -- Fire --
+   ----------
+
+   procedure Fire (Network : in  Neural_Network;
+                   Input   : in  Float_Array;
+                   Output  : out Float_Array)
+   is
+      Next_Input : Float_Array(Input'First .. Input'Last);
+   begin
+      Next_Input := Input;
+      for Layer in Network'Range loop
+         Fire(Network(Layer), Next_Input, Output);
+         Next_Input := Output;
+      end loop;
+   end Fire;
+
+   ----------
+   -- Fire --
+   ----------
+
+   procedure Fire (Block  : in out Delay_Block;
+                   Input  : in     Float_Array;
+                   Output : out    Float_Array)
+   is
+   begin
+      Output := Float_Array(Block);
+      Block  := Delay_Block(Input);
    end Fire;
 end NN.Neuron;
