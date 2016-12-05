@@ -38,6 +38,8 @@ package NN.Neuron is
       Transfer_Functions : Transfer_Function_Array_Access;
    end record;
 
+   type Network is array (Natural range <>) of Neural_Layer;
+
    Neuron_Index : constant := 1;
    Weight_Index : constant := 2;
 
