@@ -38,8 +38,12 @@ package NN.Neuron is
       Transfer_Functions : Transfer_Function_Array_Access;
    end record;
 
+   Neuron_Index : constant := 1;
+   Weight_Index : constant := 2;
+
    procedure Fire (Layer  : in  Neural_Layer;
                    Input  : in  Float_Array;
-                   Output : out Float_Array);
+                   Output : out Float_Array)
+   with Pre => Output'Length = Layer.Weights'Length(Neuron_Index);
 
 end NN.Neuron;
