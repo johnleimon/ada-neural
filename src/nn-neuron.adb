@@ -20,16 +20,18 @@
 -- OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF      --
 -- THIS SOFTWARE.                                              --
 -----------------------------------------------------------------
+with Ada.Text_IO; use Ada.Text_IO;
 
 package body NN.Neuron is
 
-   procedure Fire (Network : in Multi_Layer_Network;
-                   Input   : in Float_Array;
+   procedure Fire (Network : in  Multi_Layer_Network;
+                   Input   : in  Float_Array;
                    Output  : out Float_Array)
    is
    begin
 
-      Null;
+put_line(natural'image(Network.Bias'Length(1)) & " x " &
+         natural'image(Network.Bias'Length(2)));
 
    end Fire;
 

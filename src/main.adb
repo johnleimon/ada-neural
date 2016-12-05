@@ -21,14 +21,33 @@
 -- THIS SOFTWARE.                                              --
 -----------------------------------------------------------------
 
-with NN.Transfer;                       use NN.Transfer;
-with NN.Neuron;                         use NN.Neuron;
-with Ada.Text_IO;                       use Ada.Text_IO;
+with Ada.Numerics.Real_Arrays; use Ada.Numerics.Real_Arrays;
+with Ada.Text_IO;              use Ada.Text_IO;
+with NN.Transfer;              use NN.Transfer;
+with NN.Neuron;                use NN.Neuron;
 
 procedure Main is
 
-begin
+   Bias    : aliased Real_Matrix := ((0.0, 0.0, 0.0),
+                                     (0.0, 0.0, 0.0));
+   Weights : aliased Real_Matrix := ((0.0, 0.0, 0.0),
+                                     (0.0, 0.0, 0.0));
 
-   Null;
+   Input  : Float_Array := (0.0, 0.0, 0.0);
+   Output : Float_Array := (0.0, 0.0, 0.0);
+
+   T : aliased Transfer_Function_Matrix := (0 => (satlin'access, satlin'access));
+
+begin
+   
+   declare
+      Network : Multi_Layer_Network;
+   begin
+      Network.Bias               := Bias'Unchecked_Access;
+      Network.Weights            := Weights'Unchecked_Access;
+      Network.Transfer_Functions := T'Unchecked_Access;
+   
+      Fire(Network, Input, Output);
+   end;
 
 end Main;

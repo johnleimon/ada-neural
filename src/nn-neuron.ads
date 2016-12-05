@@ -29,8 +29,8 @@ package NN.Neuron is
    type Transfer_Function_Matrix is array (Natural range <>, Natural range <>) of Transfer_Function;
 
    type Float_Array_Access is access Float_Array;
-   type Real_Matrix_Access is access Real_Matrix;
-   type Transfer_Function_Matrix_Access is access Transfer_Function_Matrix;
+   type Real_Matrix_Access is access all Real_Matrix;
+   type Transfer_Function_Matrix_Access is access all Transfer_Function_Matrix;
 
    type Multi_Layer_Network is record
       Bias               : Real_Matrix_Access;
@@ -38,8 +38,8 @@ package NN.Neuron is
       Transfer_Functions : Transfer_Function_Matrix_Access;
    end record;
 
-   procedure Fire (Network : in Multi_Layer_Network;
-                   Input   : in Float_Array;
+   procedure Fire (Network : in  Multi_Layer_Network;
+                   Input   : in  Float_Array;
                    Output  : out Float_Array);
 
 end NN.Neuron;
