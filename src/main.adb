@@ -28,26 +28,47 @@ with NN.Neuron;                use NN.Neuron;
 
 procedure Main is
 
-   -- Example of a 3 Input , 2 Neuron Example
-   Bias    : aliased Float_Array := (1.0, 1.0, 1.0);
-   Weights : aliased Real_Matrix := ((0.5, 0.5, 0.5),
-                                     (0.7, 0.1, 0.9));
+   procedure Demo_Fire_Neural_Layer
+   is
 
-   Input  : Float_Array := (0.1, 0.2, 0.3);
-   Output : Float_Array := (0.0, 0.0);
+      Bias     : aliased Float_Array :=  (1.0, 1.0, 1.0);
+      -- Two Neurons, Three Weights --
+      Weights  : aliased Real_Matrix := ((0.5, 0.5, 0.5),
+                                         (0.7, 0.1, 0.9));
+      Input    : Float_Array         :=  (0.1, 0.2, 0.3);
+      Output   : Float_Array(1 .. 3);
+      Transfer : aliased Transfer_Function_Array := (satlin'access,
+                                                     satlin'access,
+                                                     satlin'access);
+      Layer    : Neural_Layer;
+   begin
 
-   T : aliased Transfer_Function_Array := (satlin'access, satlin'access);
+      -- Setup neuron layer --
+      Layer.Bias               := Bias'unchecked_access;
+      Layer.Weights            := Weights'unchecked_access;
+      Layer.Transfer_Functions := Transfer'unchecked_access;
+
+      -- Fire neuron layer --
+      Fire(Layer, Input, Output);
+
+      Put_Line("Demo: Fire Neural Network Layer");
+
+      Put("   INPUTS: ");
+      for Index in Input'range loop
+         Put(Float'image(Input(Index)) & " ");
+      end loop;
+      New_Line;
+
+      Put("   OUTPUTS: ");
+      for Index in Output'range loop
+         Put(Float'image(Output(Index)) & " ");
+      end loop;
+      New_Line;
+
+   end Demo_Fire_Neural_Layer;
 
 begin
    
-   declare
-      Layer : Neural_Layer;
-   begin
-      Layer.Bias               := Bias'Unchecked_Access;
-      Layer.Weights            := Weights'Unchecked_Access;
-      Layer.Transfer_Functions := T'Unchecked_Access;
-   
-      Fire(Layer, Input, Output);
-   end;
+   Demo_Fire_Neural_Layer;
 
 end Main;
