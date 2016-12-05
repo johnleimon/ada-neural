@@ -56,12 +56,13 @@ put_line(natural'image(Layer.Weights'Length(Weight_Index)) & " x" &
                    Input   : in  Float_Array;
                    Output  : out Float_Array)
    is
+      Next_Input : Float_Array(Input'First .. Input'Last);
    begin
+      Next_Input := Input;
       for Layer in Network'Range loop
-         Fire(Network(Layer), Input, Output);
-         Input := Output;
+         Fire(Network(Layer), Next_Input, Output);
+         Next_Input := Output;
       end loop;
-      return Output;
    end Fire;
 
 end NN.Neuron;
