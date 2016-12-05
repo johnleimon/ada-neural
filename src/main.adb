@@ -34,7 +34,7 @@ procedure Main is
                                      (0.7, 0.1, 0.9));
 
    Input  : Float_Array := (0.1, 0.2, 0.3);
-   Output : Float_Array := (0.0, 0.0, 0.0);
+   Output : Float_Array := (0.0, 0.0);
 
    T : aliased Transfer_Function_Array := (satlin'access, satlin'access);
 
