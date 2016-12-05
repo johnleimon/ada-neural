@@ -67,8 +67,42 @@ procedure Main is
 
    end Demo_Fire_Neural_Layer;
 
+   procedure Demo_Fire_Delay_Block
+   is
+      Block    : Delay_Block := (1.0, 2.0);
+      Input    : Float_Array := (7.7, 9.9);
+      Output_1 : Float_Array (0 .. 1);
+      Output_2 : Float_Array (0 .. 1);
+   begin
+
+      Fire(Block, Input, Output_1);
+      Fire(Block, Input, Output_2);
+
+      Put_Line("Demo: Fire Delay Block");
+
+      Put("   INPUTS:");
+      for Index in Input'Range loop
+         Put(Float'image(Input(Index)) & " ");
+      end loop;
+      New_Line;
+
+      Put("   OUTPUT 1:");
+      for Index in Input'Range loop
+         Put(Float'image(Output_1(Index)) & " ");
+      end loop;
+      New_Line;
+
+      Put("   OUTPUT 2:");
+      for Index in Input'Range loop
+         Put(Float'image(Output_2(Index)) & " ");
+      end loop;
+      New_Line;
+
+   end Demo_Fire_Delay_Block;
+
 begin
    
    Demo_Fire_Neural_Layer;
+   Demo_Fire_Delay_Block;
 
 end Main;
