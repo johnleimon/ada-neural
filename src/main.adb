@@ -28,6 +28,10 @@ with NN.Neuron;                use NN.Neuron;
 
 procedure Main is
 
+   ----------------------------
+   -- Demo_Fire_Neural_Layer --
+   ----------------------------
+
    procedure Demo_Fire_Neural_Layer
    is
 
@@ -66,6 +70,10 @@ procedure Main is
       New_Line;
 
    end Demo_Fire_Neural_Layer;
+
+   ---------------------------
+   -- Demo_Fire_Delay_Block --
+   ---------------------------
 
    procedure Demo_Fire_Delay_Block
    is
