@@ -24,6 +24,29 @@ with Ada.Text_IO; use Ada.Text_IO;
 
 package body NN.Neuron is
 
+   ------------------
+   -- Create_Layer --
+   ------------------
+
+   function Create_Layer (Number_Of_Neurons : Natural;
+                          Number_Of_Inputs  : Natural;
+                          Transfer          : Transfer_Function;
+                          Bias              : Float := 0.0;
+                          Input_Weights     : Float := 1.0) return Neural_Layer
+   is
+      Bias_Array         : Float_Array_Access := new Float_Array(1 .. Number_Of_Neurons);
+      Input_Weight_Array : Real_Matrix_Access := new Real_Matrix(Integer'First .. Integer'First + Number_Of_Neurons - 1,
+                                                                 Integer'First .. Integer'First + Number_Of_Inputs - 1);
+      Transfer_Array     : Transfer_Function_Array_Access := new Transfer_Function_Array(1 .. Number_Of_Neurons);
+      Output             : Neural_Layer;
+   begin
+      Output.Bias               := Bias_Array;
+      Output.Weights            := Input_Weight_Array;
+      Output.Transfer_Functions := Transfer_Array;
+
+      return Output;
+   end Create_Layer;
+
    ----------
    -- Fire --
    ----------

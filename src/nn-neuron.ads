@@ -42,6 +42,14 @@ package NN.Neuron is
 
    type Delay_Block is new Float_Array;
 
+   function Create_Layer (Number_Of_Neurons : Natural;
+                          Number_Of_Inputs  : Natural;
+                          Transfer          : Transfer_Function;
+                          Bias              : Float := 0.0;
+                          Input_Weights     : Float := 1.0) return Neural_Layer
+   with Pre => Number_Of_Neurons > 0 and
+               Number_Of_Inputs > 0;
+
    procedure Fire (Layer  : in  Neural_Layer;
                    Input  : in  Float_Array;
                    Output : out Float_Array)
