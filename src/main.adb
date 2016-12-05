@@ -28,26 +28,25 @@ with NN.Neuron;                use NN.Neuron;
 
 procedure Main is
 
-   Bias    : aliased Real_Matrix := ((0.0, 0.0, 0.0),
-                                     (0.0, 0.0, 0.0));
+   Bias    : aliased Float_Array := (0.0, 0.0, 0.0);
    Weights : aliased Real_Matrix := ((0.0, 0.0, 0.0),
                                      (0.0, 0.0, 0.0));
 
    Input  : Float_Array := (0.0, 0.0, 0.0);
    Output : Float_Array := (0.0, 0.0, 0.0);
 
-   T : aliased Transfer_Function_Matrix := (0 => (satlin'access, satlin'access));
+   T : aliased Transfer_Function_Array := (satlin'access, satlin'access);
 
 begin
    
    declare
-      Network : Multi_Layer_Network;
+      Layer : Neural_Layer;
    begin
-      Network.Bias               := Bias'Unchecked_Access;
-      Network.Weights            := Weights'Unchecked_Access;
-      Network.Transfer_Functions := T'Unchecked_Access;
+      Layer.Bias               := Bias'Unchecked_Access;
+      Layer.Weights            := Weights'Unchecked_Access;
+      Layer.Transfer_Functions := T'Unchecked_Access;
    
-      Fire(Network, Input, Output);
+      Fire(Layer, Input, Output);
    end;
 
 end Main;

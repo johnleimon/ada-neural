@@ -24,14 +24,16 @@ with Ada.Text_IO; use Ada.Text_IO;
 
 package body NN.Neuron is
 
-   procedure Fire (Network : in  Multi_Layer_Network;
-                   Input   : in  Float_Array;
-                   Output  : out Float_Array)
+   procedure Fire (Layer  : in  Neural_Layer;
+                   Input  : in  Float_Array;
+                   Output : out Float_Array)
    is
+      Neuron_Index : constant := 2;
+      Weight_Index : constant := 1;
    begin
 
-put_line(natural'image(Network.Bias'Length(1)) & " x " &
-         natural'image(Network.Bias'Length(2)));
+put_line(natural'image(Layer.Weights'Length(Weight_Index)) & " x " &
+         natural'image(Layer.Weights'Length(Neuron_Index)));
 
    end Fire;
 

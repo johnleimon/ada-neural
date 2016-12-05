@@ -26,20 +26,20 @@ with Ada.Numerics.Real_Arrays;          use Ada.Numerics.Real_Arrays;
 package NN.Neuron is
 
    type Float_Array is array (Natural range <>) of Float;
-   type Transfer_Function_Matrix is array (Natural range <>, Natural range <>) of Transfer_Function;
+   type Transfer_Function_Array is array (Natural range <>) of Transfer_Function;
 
-   type Float_Array_Access is access Float_Array;
+   type Float_Array_Access is access all Float_Array;
    type Real_Matrix_Access is access all Real_Matrix;
-   type Transfer_Function_Matrix_Access is access all Transfer_Function_Matrix;
+   type Transfer_Function_Array_Access is access all Transfer_Function_Array;
 
-   type Multi_Layer_Network is record
-      Bias               : Real_Matrix_Access;
+   type Neural_Layer is record
+      Bias               : Float_Array_Access;
       Weights            : Real_Matrix_Access;
-      Transfer_Functions : Transfer_Function_Matrix_Access;
+      Transfer_Functions : Transfer_Function_Array_Access;
    end record;
 
-   procedure Fire (Network : in  Multi_Layer_Network;
-                   Input   : in  Float_Array;
-                   Output  : out Float_Array);
+   procedure Fire (Layer  : in  Neural_Layer;
+                   Input  : in  Float_Array;
+                   Output : out Float_Array);
 
 end NN.Neuron;
