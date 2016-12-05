@@ -44,9 +44,9 @@ procedure Main is
    begin
 
       -- Setup neuron layer --
-      Layer.Bias               := Bias'unchecked_access;
-      Layer.Weights            := Weights'unchecked_access;
-      Layer.Transfer_Functions := Transfer'unchecked_access;
+      Layer.Bias               := Bias'Unchecked_access;
+      Layer.Weights            := Weights'Unchecked_access;
+      Layer.Transfer_Functions := Transfer'Unchecked_access;
 
       -- Fire neuron layer --
       Fire(Layer, Input, Output);
@@ -54,14 +54,14 @@ procedure Main is
       Put_Line("Demo: Fire Neural Network Layer");
 
       Put("   INPUTS: ");
-      for Index in Input'range loop
+      for Index in Input'Range loop
          Put(Float'image(Input(Index)) & " ");
       end loop;
       New_Line;
 
       Put("   OUTPUTS: ");
-      for Index in Output'range loop
-         Put(Float'image(Output(Index)) & " ");
+      for Index in Output'Range loop
+         Put(Float'Image(Output(Index)) & " ");
       end loop;
       New_Line;
 

@@ -30,17 +30,17 @@ package body NN.Neuron is
    is
       Neuron_Index : constant := 1;
       Weight_Index : constant := 2;
+      Output_Index : Natural  := Output'First;
    begin
 
 put_line(natural'image(Layer.Weights'Length(Weight_Index)) & " x " &
          natural'image(Layer.Weights'Length(Neuron_Index)));
 
-      for N in Layer.Weights'range(Neuron_Index) loop
-         for W in Layer.Weights'range(Weight_Index) loop
-
-            Put_Line(Float'image(Layer.Weights(N, W)));
-
+      for N in Layer.Weights'Range(Neuron_Index) loop
+         for W in Layer.Weights'Range(Weight_Index) loop
+            Put_Line(Natural'Image(Output_Index) & ": " & Float'Image(Layer.Weights(N, W)));
          end loop;
+         Output_Index := Output_Index + 1;
       end loop;
 
    end Fire;

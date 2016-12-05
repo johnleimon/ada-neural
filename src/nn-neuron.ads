@@ -25,6 +25,9 @@ with Ada.Numerics.Real_Arrays;          use Ada.Numerics.Real_Arrays;
 
 package NN.Neuron is
 
+   Neuron_Index : constant := 1;
+   Weight_Index : constant := 2;
+
    type Float_Array is array (Natural range <>) of Float;
    type Transfer_Function_Array is array (Natural range <>) of Transfer_Function;
 
@@ -38,14 +41,16 @@ package NN.Neuron is
       Transfer_Functions : Transfer_Function_Array_Access;
    end record;
 
-   type Network is array (Natural range <>) of Neural_Layer;
-
-   Neuron_Index : constant := 1;
-   Weight_Index : constant := 2;
+   type Neural_Network is array (Natural range <>) of Neural_Layer;
 
    procedure Fire (Layer  : in  Neural_Layer;
                    Input  : in  Float_Array;
                    Output : out Float_Array)
    with Pre => Output'Length = Layer.Weights'Length(Neuron_Index);
+
+ --  procedure Fire (Network : in  Neural_Network;
+ --                  Input   : in  Float_Array;
+ --                  Output  : out Float_Array)
+ --  with Pre => Output'Length = Network(Network'First).Weights'Length(Neuron_Index);
 
 end NN.Neuron;
