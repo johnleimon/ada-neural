@@ -28,8 +28,8 @@ package body NN.Neuron is
                    Input  : in  Float_Array;
                    Output : out Float_Array)
    is
-      Neuron_Index : constant := 2;
-      Weight_Index : constant := 1;
+      Neuron_Index : constant := 1;
+      Weight_Index : constant := 2;
    begin
 
 put_line(natural'image(Layer.Weights'Length(Weight_Index)) & " x " &
