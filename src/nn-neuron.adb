@@ -28,21 +28,29 @@ package body NN.Neuron is
                    Input  : in  Float_Array;
                    Output : out Float_Array)
    is
-      Neuron_Index : constant := 1;
-      Weight_Index : constant := 2;
-      Output_Index : Natural  := Output'First;
+      Input_Index  : Natural  := 0;
+      Neuron_Index : Natural  := 0;
+      Weight       : Float;
+      Sum          : Float; 
    begin
+      
+      for N in Layer.Weights'Range(1) loop
+         
+         Sum         := 0.0;
+         Input_Index := 0;
 
-put_line(natural'image(Layer.Weights'Length(Weight_Index)) & " x " &
-         natural'image(Layer.Weights'Length(Neuron_Index)));
-
-      for N in Layer.Weights'Range(Neuron_Index) loop
-         for W in Layer.Weights'Range(Weight_Index) loop
-            Put_Line(Natural'Image(Output_Index) & ": " & Float'Image(Layer.Weights(N, W)));
+         for I in Layer.Weights'Range(2) loop
+            Weight      := Layer.Weights(N,I);
+            Sum         := Sum + Input(Input_Index) * Weight;
+            Input_Index := Input_Index + 1;
          end loop;
-         Output_Index := Output_Index + 1;
+         
+         Sum                  := Sum + Layer.Bias(Neuron_Index);
+         Sum                  := Layer.Transfer_Functions(Neuron_Index)(Sum);
+         Output(Neuron_Index) := Sum;
+         Neuron_Index         := Neuron_Index + 1;
+         
       end loop;
-
+      
    end Fire;
-
 end NN.Neuron;

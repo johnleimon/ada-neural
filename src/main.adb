@@ -36,7 +36,7 @@ procedure Main is
       Weights  : aliased Real_Matrix := ((0.5, 0.5, 0.5),
                                          (0.7, 0.1, 0.9));
       Input    : Float_Array         :=  (0.1, 0.2, 0.3);
-      Output   : Float_Array(1 .. 3);
+      Output   : Float_Array(0 .. 1);
       Transfer : aliased Transfer_Function_Array := (satlin'access,
                                                      satlin'access,
                                                      satlin'access);
