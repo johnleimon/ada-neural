@@ -35,7 +35,7 @@ procedure Main is
    procedure Demo_Fire_Neural_Layer
    is
 
-      Bias     : aliased Float_Array :=  (1.0, 1.0, 1.0);
+      Bias     : aliased Float_Array :=  (0.1, -0.06);
       -- Two Neurons, Three Weights --
       Weights  : aliased Real_Matrix := ((0.5, 0.5, 0.5),
                                          (0.7, 0.1, 0.9));
