@@ -28,11 +28,12 @@ with NN.Neuron;                use NN.Neuron;
 
 procedure Main is
 
-   Bias    : aliased Float_Array := (0.0, 0.0, 0.0);
-   Weights : aliased Real_Matrix := ((0.0, 0.0, 0.0),
-                                     (0.0, 0.0, 0.0));
+   -- Example of a 3 Input , 2 Neuron Example
+   Bias    : aliased Float_Array := (1.0, 1.0, 1.0);
+   Weights : aliased Real_Matrix := ((0.5, 0.5, 0.5),
+                                     (0.7, 0.1, 0.9));
 
-   Input  : Float_Array := (0.0, 0.0, 0.0);
+   Input  : Float_Array := (0.1, 0.2, 0.3);
    Output : Float_Array := (0.0, 0.0, 0.0);
 
    T : aliased Transfer_Function_Array := (satlin'access, satlin'access);
