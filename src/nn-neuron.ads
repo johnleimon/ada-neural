@@ -32,6 +32,10 @@ package NN.Neuron is
    type Real_Matrix_Access is access all Real_Matrix;
    type Transfer_Function_Array_Access is access all Transfer_Function_Array;
 
+   procedure Free is new Ada.Unchecked_Deallocation(Float_Array, Float_Array_Access);
+   procedure Free is new Ada.Unchecked_Deallocation(Real_Matrix, Real_Matrix_Access);
+   procedure Free is new Ada.Unchecked_Deallocation(Transfer_Function_Array, Transfer_Function_Array_Access);
+
    type Neural_Layer is record
       Bias               : Float_Array_Access;
       Weights            : Real_Matrix_Access;
@@ -49,6 +53,8 @@ package NN.Neuron is
                           Input_Weights     : Float := 1.0) return Neural_Layer
    with Pre => Number_Of_Neurons > 0 and
                Number_Of_Inputs > 0;
+
+   procedure Delete_Layer (Layer : in out Neural_Layer);
 
    procedure Fire (Layer  : in  Neural_Layer;
                    Input  : in  Float_Array;

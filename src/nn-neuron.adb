@@ -47,6 +47,18 @@ package body NN.Neuron is
       return Output;
    end Create_Layer;
 
+   ------------------
+   -- Delete_Layer --
+   ------------------
+
+   procedure Delete_Layer (Layer : in out Neural_Layer)
+   is
+   begin
+      Free(Layer.Bias);
+      Free(Layer.Weights);
+      Free(Layer.Transfer_Functions);
+   end Delete_Layer;
+
    ----------
    -- Fire --
    ----------
