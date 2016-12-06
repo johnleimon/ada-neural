@@ -5,3 +5,12 @@
   Two Dimensional Matrixes
      
      https://rosettacode.org/wiki/Polynomial_regression#Ada
+
+     Example:
+
+        M : constant Real_Matrix := ( (  1 , 2  ),
+                                      (  3 , 4  ) );
+        M(0, 0): 1
+        M(0, 1): 2
+        M(1, 0): 3
+        M(1, 1): 4

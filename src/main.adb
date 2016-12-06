@@ -20,7 +20,6 @@
 -- OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF      --
 -- THIS SOFTWARE.                                              --
 -----------------------------------------------------------------
-
 with Ada.Numerics.Real_Arrays; use Ada.Numerics.Real_Arrays;
 with Ada.Text_IO;              use Ada.Text_IO;
 with NN.Transfer;              use NN.Transfer;
@@ -28,19 +27,44 @@ with NN.Neuron;                use NN.Neuron;
 
 procedure Main is
 
+   type Fixed is delta 0.01 range -100.0..100.0;
+
+   DEFAULT : constant String := Character'Val(16#1B#) & "[39m";
+   GREEN   : constant String := Character'Val(16#1B#) & "[92m";
+   RED     : constant String := Character'Val(16#1B#) & "[31m";
+
+   ---------
+   -- Put --
+   ---------
+
+   procedure Put (X : Real_Matrix)
+   is
+   begin
+      for I in X'Range (1) loop
+         for J in X'Range (2) loop
+            Put (Fixed'Image (Fixed (X (I, J))));
+         end loop;
+      end loop;
+      New_Line;
+   end Put;
+
    ----------------------------
-   -- Demo_Fire_Neural_Layer --
+   -- Test_Fire_Neural_Layer --
    ----------------------------
 
-   procedure Demo_Fire_Neural_Layer
+   procedure Test_Fire_Neural_Layer
    is
 
-      Bias     : aliased Float_Array :=  (0.1, -0.06);
+      Bias     : aliased Float_Array :=  ( 0.1, -0.06 );
       -- Two Neurons, Three Weights --
-      Weights  : aliased Real_Matrix := ((0.5, 0.5, 0.5),
-                                         (0.7, 0.1, 0.9));
-      Input    : Float_Array         :=  (0.1, 0.2, 0.3);
-      Output   : Float_Array(0 .. 1);
+      Weights  : aliased Real_Matrix := ( ( 0.5, 0.5, 0.5 ),
+                                          ( 0.7, 0.1, 0.9 ) );
+      Input    : Real_Matrix         :=  ( ( Integer'First => 0.1 ),
+                                           ( Integer'First => 0.2 ),
+                                           ( Integer'First => 0.3 ) );
+      Output   : Real_Matrix         :=  ( ( Integer'First => 0.0 ),
+                                           ( Integer'First => 0.0 ),
+                                           ( Integer'First => 0.0 ) );
       Transfer : aliased Transfer_Function_Array := (satlin'access,
                                                      satlin'access,
                                                      satlin'access);
@@ -55,21 +79,24 @@ procedure Main is
       -- Fire neuron layer --
       Fire(Layer, Input, Output);
 
-      Put_Line("Demo: Fire Neural Network Layer");
+      Put_Line("Test: Fire Neural Network Layer");
 
-      Put("   INPUTS: ");
-      for Index in Input'Range loop
-         Put(Float'image(Input(Index)) & " ");
-      end loop;
-      New_Line;
+      Put("   INPUTS:  ");
+      Put(Input);
 
       Put("   OUTPUTS: ");
-      for Index in Output'Range loop
-         Put(Float'Image(Output(Index)) & " ");
-      end loop;
-      New_Line;
+      Put(Output);
 
-   end Demo_Fire_Neural_Layer;
+      -- Evaluate output --
+      if Output(Output'First, Output'First)     = 0.4 and
+         Output(Output'First + 1, Output'First) = 0.3
+      then
+         Put_Line(GREEN & "   [ PASS ]" & DEFAULT);
+      else
+         Put_Line(RED   & "   [ FAIL ]" & DEFAULT);
+      end if;
+
+   end Test_Fire_Neural_Layer;
 
    ---------------------------
    -- Demo_Fire_Delay_Block --
@@ -77,10 +104,11 @@ procedure Main is
 
    procedure Demo_Fire_Delay_Block
    is
-      Block    : Delay_Block := (1.0, 2.0);
-      Input    : Float_Array := (7.7, 9.9);
-      Output_1 : Float_Array (0 .. 1);
-      Output_2 : Float_Array (0 .. 1);
+      Initial_Condition : aliased Real_Matrix := ( 1 => ( 1.0, 2.0 ) );
+      Input             :         Real_Matrix := ( 1 => ( 7.7, 9.9 ) );
+      Output_1          :         Real_Matrix := ( 1 => ( 0.0, 0.0 ) );
+      Output_2          :         Real_Matrix := ( 1 => ( 0.0, 0.0 ) );
+      Block             :         Delay_Block := Initial_Condition'unchecked_access;
    begin
 
       Fire(Block, Input, Output_1);
@@ -88,29 +116,20 @@ procedure Main is
 
       Put_Line("Demo: Fire Delay Block");
 
-      Put("   INPUTS:");
-      for Index in Input'Range loop
-         Put(Float'image(Input(Index)) & " ");
-      end loop;
-      New_Line;
+      Put("   INPUTS:  ");
+      Put(Input);
 
       Put("   OUTPUT 1:");
-      for Index in Input'Range loop
-         Put(Float'image(Output_1(Index)) & " ");
-      end loop;
-      New_Line;
+      Put(Output_1);
 
       Put("   OUTPUT 2:");
-      for Index in Input'Range loop
-         Put(Float'image(Output_2(Index)) & " ");
-      end loop;
-      New_Line;
+      Put(Output_2);
 
    end Demo_Fire_Delay_Block;
 
 begin
-   
-   Demo_Fire_Neural_Layer;
+      
+   Test_Fire_Neural_Layer;
    Demo_Fire_Delay_Block;
 
 end Main;

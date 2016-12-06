@@ -22,6 +22,7 @@
 -----------------------------------------------------------------
 with Ada.Containers.Indefinite_Vectors; use Ada.Containers;
 with Ada.Numerics.Real_Arrays;          use Ada.Numerics.Real_Arrays;
+with Ada.Unchecked_Deallocation;
 
 package NN.Neuron is
 
@@ -44,32 +45,54 @@ package NN.Neuron is
 
    type Neural_Network is array (Natural range <>) of Neural_Layer;
 
-   type Delay_Block is new Float_Array;
+   type Delay_Block is new Real_Matrix_Access;
+
+   type Hamming_Network is record
+      Feedforward : Neural_Layer;
+      Recurrent   : Neural_Layer;
+      Block       : Delay_Block;
+   end record;
+
+   function Create_Delay_Block (Number_Of_Neurons : Natural) return Delay_Block;
 
    function Create_Layer (Number_Of_Neurons : Natural;
                           Number_Of_Inputs  : Natural;
                           Transfer          : Transfer_Function;
-                          Bias              : Float := 0.0;
-                          Input_Weights     : Float := 1.0) return Neural_Layer
+                          Input_Weights     : Real_Matrix;
+                          Bias              : Float := 0.0) return Neural_Layer
    with Pre => Number_Of_Neurons > 0 and
                Number_Of_Inputs > 0;
 
    procedure Delete_Layer (Layer : in out Neural_Layer);
 
+   function Create_Hamming_Network (Number_Of_Neurons : Natural;
+                                    Number_Of_Inputs  : Natural;
+                                    Bias              : Float) return Hamming_Network;
+
+   procedure Delete_Hamming_Network (Network : in out Hamming_Network);
+
    procedure Fire (Layer  : in  Neural_Layer;
-                   Input  : in  Float_Array;
-                   Output : out Float_Array)
-   with Pre => Output'Length = Layer.Weights'Length(2);
+                   Input  : in  Real_Matrix;
+                   Output : out Real_Matrix)
+                   with Pre => 
+                        Output'Length = Layer.Weights'Length(2);
 
    procedure Fire (Network : in  Neural_Network;
-                   Input   : in  Float_Array;
-                   Output  : out Float_Array)
-   with Pre => Output'Length = Network(Network'First).Weights'Length(2);
+                   Input   : in  Real_Matrix;
+                   Output  : out Real_Matrix)
+                   with Pre => 
+                        Output'Length = Network(Network'First).Weights'Length(2);
 
    procedure Fire (Block  : in out Delay_Block;
-                   Input  : in     Float_Array;
-                   Output : out    Float_Array)
-   with Pre => Block'Length = Input'Length and
-               Input'Length = Output'Length;
+                   Input  : in     Real_Matrix;
+                   Output : out    Real_Matrix)
+                   with Pre => 
+                        Block'Length = Input'Length
+                                    and
+                        Input'Length = Output'Length;
+
+   procedure Fire (Network : in  out Hamming_Network;
+                   Input   : in      Real_Matrix;
+                   Output  : out     Real_Matrix);
 
 end NN.Neuron;
