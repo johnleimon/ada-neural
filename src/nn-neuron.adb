@@ -144,30 +144,24 @@ package body NN.Neuron is
                    Input  : in  Real_Matrix;
                    Output : out Real_Matrix)
    is
-      Input_Index  : Natural;
-      Neuron_Index : Natural;
-      Weight       : Float;
-      Sum          : Float; 
-
+      BiasTransfer_Index : Natural;
+      Weight             : Float;
+      Sum                : Float; 
    begin
 
-      Neuron_Index := 0;
+      BiasTransfer_Index := 0;
       
-      for Neuron in Layer.Weights'Range(1) loop
-         Sum         := 0.0;
-         Input_Index := 0;
-
-         for Input_Weight in Layer.Weights'Range(2) loop
-            Weight      := Layer.Weights(Neuron, Input_Weight);
-            Sum         := Sum + Input(Integer'First + Input_Index, Integer'First) * Weight;
-            Input_Index := Input_Index + 1;
+      for Neuron_Index in Layer.Weights'Range(1) loop
+         Sum := 0.0;
+         
+         for Input_Index in Layer.Weights'Range(2) loop
+            Weight := Layer.Weights(Neuron_Index, Input_Index);
+            Sum    := Sum + Input(Input_Index, Integer'First) * Weight;
          end loop;
 
-         Sum                                  := Sum + Layer.Bias(Neuron_Index); 
-         Output(Integer'First + Neuron_Index,
-                Integer'First)                := Layer.Transfer_Functions(Neuron_Index)(Sum);
-         Neuron_Index                         := Neuron_Index + 1;
-      
+         Sum                                := Sum + Layer.Bias(BiasTransfer_Index); 
+         Output(Neuron_Index,Integer'First) := Layer.Transfer_Functions(BiasTransfer_Index)(Sum);
+         BiasTransfer_Index                 := BiasTransfer_Index + 1;
       end loop;
    end Fire;
 
