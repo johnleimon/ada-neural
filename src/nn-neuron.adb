@@ -35,11 +35,12 @@ package body NN.Neuron is
                           Input_Weights     : Real_Matrix_Access;
                           Bias              : Float := 0.0) return Neural_Layer
    is
-      Bias_Array     : Float_Array_Access := new Float_Array(1 .. Number_Of_Neurons);
+      Bias_Array     : aliased Float_Array := (1 .. Number_Of_Neurons => Bias);
       Transfer_Array : Transfer_Function_Array_Access := new Transfer_Function_Array(1 .. Number_Of_Neurons);
       Output         : Neural_Layer;
    begin
-      Output.Bias               := Bias_Array;
+
+      Output.Bias               := Bias_Array'Unchecked_Access;
       Output.Weights            := Input_Weights;
       Output.Transfer_Functions := Transfer_Array;
 
@@ -79,14 +80,13 @@ package body NN.Neuron is
 
    function Create_Hamming_Network (Number_Of_Neurons : Natural;
                                     Number_Of_Inputs  : Natural;
+                                    Prototypes        : Real_Matrix_Access;
                                     Bias              : Float) return Hamming_Network
    is
       ε                       : constant := 0.5;
       Output                  : Hamming_Network;
-      Input_Weights           : Real_Matrix_Access := new Real_Matrix (Integer'First .. Integer'First + Number_Of_Neurons,
-                                                                       Integer'First .. Integer'First + Number_Of_Neurons);
       Recurrent_Input_Weights : Real_Matrix_Access := new Real_Matrix (Integer'First .. Integer'First + Number_Of_Neurons,
-                                                                       Integer'First .. Integer'First + Number_Of_Neurons);
+                                                                       Integer'First .. Integer'First + Prototypes'Length(2) - 1);
    begin
 
       -- Our recurrent input weights matrix for a 2 x 2 matrix --
@@ -98,7 +98,9 @@ package body NN.Neuron is
       for I in Recurrent_Input_Weights'Range(1) loop
          for J in Recurrent_Input_Weights'Range(2) loop
             if Abs(I - J) + 1 = Recurrent_Input_Weights'Length(1) then
-               Recurrent_Input_Weights(I, J) := ε;
+               Recurrent_Input_Weights(I, J) := -ε;
+            else
+               Recurrent_Input_Weights(I, J) := 1.0;
             end if;
          end loop;
       end loop;
@@ -106,7 +108,7 @@ package body NN.Neuron is
       Output.Feedforward := Create_Layer(Number_Of_Neurons,
                                          Number_Of_Inputs,
                                          Linear'Access,
-                                         Input_Weights,
+                                         Prototypes,
                                          Bias);
       Output.Recurrent   := Create_Layer(Number_Of_Neurons,
                                          Number_Of_Inputs,

@@ -133,18 +133,18 @@ procedure Main is
 
    procedure Test_Fire_Hamming_Network
    is
-      Input   : Real_Matrix :=  ( ( Integer'First =>  1.0 ),
-                                  ( Integer'First => -1.0 ),
-                                  ( Integer'First => -1.0 ) );
-      Output  : Real_Matrix :=  ( ( Integer'First =>  0.0 ),
-                                  ( Integer'First =>  0.0 ),
-                                  ( Integer'First =>  0.0 ) );
-      Network : Hamming_Network;
+      Prototypes : aliased Real_Matrix := ( ( 1.0, -1.0, -1.0 ),
+                                            ( 1.0,  1.0, -1.0 ) );
+      Input      : Real_Matrix         :=  ( ( Integer'First =>  1.0 ),
+                                             ( Integer'First => -1.0 ) );
+      Output     : Real_Matrix         :=  ( ( Integer'First =>  0.0 ),
+                                             ( Integer'First =>  0.0 ) );
+      Network    : Hamming_Network;
    begin
 
-      Network := Create_Hamming_Network(2, 3, 3.0);
+      Network := Create_Hamming_Network(2, 3, Prototypes'Unchecked_Access, 3.0);
 
-      Put_Line("Test: Fire Neural Network Layer");
+      Put_Line("Test: Fire Hamming Network");
 
       Fire(Network, Input, Output);
 

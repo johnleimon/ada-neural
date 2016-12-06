@@ -67,6 +67,7 @@ package NN.Neuron is
 
    function Create_Hamming_Network (Number_Of_Neurons : Natural;
                                     Number_Of_Inputs  : Natural;
+                                    Prototypes        : Real_Matrix_Access;
                                     Bias              : Float) return Hamming_Network;
 
    procedure Delete_Hamming_Network (Network : in out Hamming_Network);
