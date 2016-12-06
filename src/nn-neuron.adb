@@ -32,7 +32,7 @@ package body NN.Neuron is
    function Create_Layer (Number_Of_Neurons : Natural;
                           Number_Of_Inputs  : Natural;
                           Transfer          : Transfer_Function;
-                          Input_Weights     : Real_Matrix;
+                          Input_Weights     : Real_Matrix_Access;
                           Bias              : Float := 0.0) return Neural_Layer
    is
       Bias_Array     : Float_Array_Access := new Float_Array(1 .. Number_Of_Neurons);
@@ -40,7 +40,7 @@ package body NN.Neuron is
       Output         : Neural_Layer;
    begin
       Output.Bias               := Bias_Array;
-      Output.Weights.all        := Input_Weights;
+      Output.Weights            := Input_Weights;
       Output.Transfer_Functions := Transfer_Array;
 
       return Output;
@@ -83,10 +83,10 @@ package body NN.Neuron is
    is
       ε                       : constant := 0.5;
       Output                  : Hamming_Network;
-      Input_Weights           : Real_Matrix (Integer'First .. Integer'First + Number_Of_Neurons,
-                                             Integer'First .. Integer'First + Number_Of_Neurons);
-      Recurrent_Input_Weights : Real_Matrix (Integer'First .. Integer'First + Number_Of_Neurons,
-                                             Integer'First .. Integer'First + Number_Of_Neurons);
+      Input_Weights           : Real_Matrix_Access := new Real_Matrix (Integer'First .. Integer'First + Number_Of_Neurons,
+                                                                       Integer'First .. Integer'First + Number_Of_Neurons);
+      Recurrent_Input_Weights : Real_Matrix_Access := new Real_Matrix (Integer'First .. Integer'First + Number_Of_Neurons,
+                                                                       Integer'First .. Integer'First + Number_Of_Neurons);
    begin
 
       -- Our recurrent input weights matrix for a 2 x 2 matrix --
@@ -114,11 +114,6 @@ package body NN.Neuron is
                                          Recurrent_Input_Weights,
                                          Bias);
       Output.Block       := Create_Delay_Block(Number_Of_Neurons);
-
-      -- TODO TODO TODO TODO TODO TODO TODO TODO TODO --
-      -- TODO TODO TODO TODO TODO TODO TODO TODO TODO --
-      -- TODO TODO TODO TODO TODO TODO TODO TODO TODO --
-      -- TODO TODO TODO TODO TODO TODO TODO TODO TODO --
 
       return Output;
 
@@ -206,12 +201,14 @@ package body NN.Neuron is
       Feedforward_Output : Real_Matrix(1 .. 1, Output'First .. Output'Last);
    begin
 
+      -- Feedforward layer --
       Fire(Network.Feedforward, Input, Feedforward_Output);
 
-      Network.Block.all := Feedforward_Output;
-
-      -- TODO --
-
+      -- Recurrent layer --
+      loop
+         Fire(Network.Recurrent, Feedforward_Output, Output);
+         exit when Input = Feedforward_Output;
+      end loop;
    end Fire;
 
 end NN.Neuron;

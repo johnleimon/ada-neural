@@ -58,7 +58,7 @@ package NN.Neuron is
    function Create_Layer (Number_Of_Neurons : Natural;
                           Number_Of_Inputs  : Natural;
                           Transfer          : Transfer_Function;
-                          Input_Weights     : Real_Matrix;
+                          Input_Weights     : Real_Matrix_Access;
                           Bias              : Float := 0.0) return Neural_Layer
    with Pre => Number_Of_Neurons > 0 and
                Number_Of_Inputs > 0;

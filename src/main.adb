@@ -127,9 +127,39 @@ procedure Main is
 
    end Demo_Fire_Delay_Block;
 
+   -------------------------------
+   -- Test_Fire_Hamming_Network --
+   -------------------------------
+
+   procedure Test_Fire_Hamming_Network
+   is
+      Input   : Real_Matrix :=  ( ( Integer'First =>  1.0 ),
+                                  ( Integer'First => -1.0 ),
+                                  ( Integer'First => -1.0 ) );
+      Output  : Real_Matrix :=  ( ( Integer'First =>  0.0 ),
+                                  ( Integer'First =>  0.0 ),
+                                  ( Integer'First =>  0.0 ) );
+      Network : Hamming_Network;
+   begin
+
+      Network := Create_Hamming_Network(2, 3, 3.0);
+
+      Put_Line("Test: Fire Neural Network Layer");
+
+      Fire(Network, Input, Output);
+
+      Put("   INPUTS:  ");
+      Put(Input);
+
+      Put("   OUTPUTS: ");
+      Put(Output);
+
+   end Test_Fire_Hamming_Network;
+
 begin
       
    Test_Fire_Neural_Layer;
    Demo_Fire_Delay_Block;
+   Test_Fire_Hamming_Network;
 
 end Main;
