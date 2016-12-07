@@ -78,35 +78,6 @@ procedure Main is
 
    end Test_Fire_Neural_Layer;
 
-   ---------------------------
-   -- Demo_Fire_Delay_Block --
-   ---------------------------
-
-   procedure Demo_Fire_Delay_Block
-   is
-      Initial_Condition : aliased Real_Matrix := ( 1 => ( 1.0, 2.0 ) );
-      Input             :         Real_Matrix := ( 1 => ( 7.7, 9.9 ) );
-      Output_1          :         Real_Matrix := ( 1 => ( 0.0, 0.0 ) );
-      Output_2          :         Real_Matrix := ( 1 => ( 0.0, 0.0 ) );
-      Block             :         Delay_Block := Initial_Condition'unchecked_access;
-   begin
-
-      Fire(Block, Input, Output_1);
-      Fire(Block, Input, Output_2);
-
-      Put_Line("Demo: Fire Delay Block");
-
-      Put_Line("   INPUTS:  ");
-      Put(Input);
-
-      Put_Line("   OUTPUT 1:");
-      Put(Output_1);
-
-      Put_Line("   OUTPUT 2:");
-      Put(Output_2);
-
-   end Demo_Fire_Delay_Block;
-
    -------------------------------
    -- Test_Fire_Hamming_Network --
    -------------------------------
@@ -143,7 +114,6 @@ procedure Main is
 begin
       
    Test_Fire_Neural_Layer;
-   Demo_Fire_Delay_Block;
    Test_Fire_Hamming_Network;
 
 end Main;

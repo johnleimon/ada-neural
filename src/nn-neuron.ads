@@ -45,15 +45,10 @@ package NN.Neuron is
 
    type Neural_Network is array (Natural range <>) of Neural_Layer;
 
-   type Delay_Block is new Real_Matrix_Access;
-
    type Hamming_Network is record
       Feedforward : Neural_Layer;
       Recurrent   : Neural_Layer;
-      Block       : Delay_Block;
    end record;
-
-   function Create_Delay_Block (Number_Of_Neurons : Natural) return Delay_Block;
 
    function Create_Layer (Number_Of_Neurons : Natural;
                           Number_Of_Inputs  : Natural;
@@ -83,14 +78,6 @@ package NN.Neuron is
                    Output  : out Real_Matrix)
                    with Pre => 
                         Output'Length = Network(Network'First).Weights'Length(2);
-
-   procedure Fire (Block  : in out Delay_Block;
-                   Input  : in     Real_Matrix;
-                   Output : out    Real_Matrix)
-                   with Pre => 
-                        Block'Length = Input'Length
-                                    and
-                        Input'Length = Output'Length;
 
    procedure Fire (Network : in  out Hamming_Network;
                    Input   : in      Real_Matrix;

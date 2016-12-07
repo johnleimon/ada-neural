@@ -63,21 +63,6 @@ package body NN.Neuron is
       Free(Layer.Transfer_Functions);
    end Delete_Layer;
 
-   ------------------------
-   -- Create_Delay_Block --
-   ------------------------
-
-   function Create_Delay_Block (Number_Of_Neurons : Natural) return Delay_Block
-   is
-      Output : Delay_Block;
-   begin
-
-      Output := new Real_Matrix(1 .. 1, 1 .. Number_Of_Neurons);
-
-      return Output;
-
-   end Create_Delay_Block;
-
    ----------------------------
    -- Create_Hamming_Network --
    ----------------------------
@@ -119,7 +104,6 @@ package body NN.Neuron is
                                          Positive_Linear'Access,
                                          Recurrent_Input_Weights,
                                          Bias);
-      Output.Block       := Create_Delay_Block(Number_Of_Neurons);
 
       return Output;
 
@@ -134,7 +118,6 @@ package body NN.Neuron is
    begin
       Delete_Layer(Network.Feedforward);
       Delete_Layer(Network.Recurrent);
-      Free(Network.Block);
    end Delete_Hamming_Network;
 
    ----------
@@ -177,19 +160,6 @@ package body NN.Neuron is
          Fire(Network(Layer), Next_Input, Output);
          Next_Input := Output;
       end loop;
-   end Fire;
-
-   ----------
-   -- Fire --
-   ----------
-
-   procedure Fire (Block  : in out Delay_Block;
-                   Input  : in     Real_Matrix;
-                   Output : out    Real_Matrix)
-   is
-   begin
-      Output    := Real_Matrix(Block.all);
-      Block.all := Input;
    end Fire;
 
    ----------
