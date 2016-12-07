@@ -123,9 +123,9 @@ procedure Main is
 
       Prototypes : aliased Real_Matrix := ( ( 1.0, -1.0, -1.0 ),
                                             ( 1.0,  1.0, -1.0 ) );
-      Input      : Real_Matrix         := ( ( Integer'First =>  1.0 ),
-                                            ( Integer'First =>  1.0 ),
-                                            ( Integer'First =>  1.0 ) );
+      Input      : Real_Matrix         := ( ( Integer'First => -1.0 ),
+                                            ( Integer'First => -1.0 ),
+                                            ( Integer'First => -1.0 ) );
       Output     : Integer;
       Network    : Hamming_Network;
    begin
