@@ -37,39 +37,24 @@ procedure Main is
    GREEN   : constant String := Character'Val(16#1B#) & "[92m";
    RED     : constant String := Character'Val(16#1B#) & "[31m";
 
-   FULL_DEBUG : constant Boolean := False; -- Prints full debug info --
-   
-   ---------
-   -- Put --
-   ---------
+   DEBUG   : constant Boolean := True; -- Prints full debug info --
 
-   procedure Put (X : Real_Matrix)
-   is
-   begin
-      for I in X'Range (1) loop
-         for J in X'Range (2) loop
-            Put (Float'Image(X (I, J)));
-         end loop;
-         New_Line;
-      end loop;
-   end Put;
-   
    --------------------------
    -- Register_Test_Result --
    --------------------------
-   
-   procedure Register_Test_Result (Test_Name   : String;
-                                        Pass   : Boolean;
-                                        Input  : Real_Matrix;
-                                        Output : Real_Matrix)
+
+   procedure Register_Test_Result (Test_Name : String;
+                                   Pass      : Boolean;
+                                   Input     : Real_Matrix;
+                                   Output    : Real_Matrix)
    is
    begin
       if Pass then
-         Put_Line(GREEN & Test_Name & "   [ PASS ]" & DEFAULT);
+         Put_Line(Test_Name & GREEN & " [ PASS ]" & DEFAULT);
       else
-         Put_Line(RED   & Test_Name & "   [ FAIL ]" & DEFAULT);
+         Put_Line(Test_Name & RED & " [ FAIL ]" & DEFAULT);
       end if;
-      if FULL_DEBUG then
+      if DEBUG then
          Put_Line("   INPUT:  ");
          Put(Input);
          Put_Line("   OUTPUT: ");
@@ -83,53 +68,55 @@ procedure Main is
    ----------------------------
    
    procedure Test_Create_Layer
-
    is
-      Number_Of_Neurons : Natural               := 2;
-      Number_Of_Inputs  : Natural               := 3;
-      Transfer          : Transfer_Function     := satlin'access;
-      Input_Weights     : aliased Real_Matrix   := Create_Real_Matrix(Number_Of_Neurons,Number_Of_Inputs);
-      Bias              : Float                 := 0.0;
+      Number_Of_Neurons : Natural             := 2;
+      Number_Of_Inputs  : Natural             := 3;
+      Transfer          : Transfer_Function   := satlin'access;
+      Input_Weights     : aliased Real_Matrix := Create_Real_Matrix(Number_Of_Neurons, Number_Of_Inputs);
+      Bias              : Float               := 0.0;
+      Input             : Real_Matrix         := Create_Real_Matrix(Number_Of_Inputs, 1);
+      Output            : Real_Matrix         := Create_Real_Matrix(Number_Of_Neurons, 1);  
+      Test_Name         : String              := "Test_Create_Layer";
+      Test_Result       : Boolean             := False;                           
       Test_Layer        : Neural_Layer;
-      Input             : Real_Matrix           := Create_Real_Matrix(Number_Of_Inputs,1);
-      Output            : Real_Matrix           := Create_Real_Matrix(Number_Of_Neurons,1);  
-      Test_Name  : String                       := "Fire Layer from Create_Layer";
-      Test_Result : Boolean                     := False;                           
    begin
 
       -- Setup neuron layer --
-      for I in Input_Weights'Range (1) loop
-         for J in Input_Weights'Range (2) loop
-            Input_Weights(I,J) := 0.5;
+      for I in Input_Weights'Range(1) loop
+         for J in Input_Weights'Range(2) loop
+            Input_Weights(I, J) := 0.5;
          end loop;
       end loop;
 
-      for I in Input'Range (1) loop
-         for J in Input'Range (2) loop
-            Input(I,J) := 0.5;
+      for I in Input'Range(1) loop
+         for J in Input'Range(2) loop
+            Input(I, J) := 0.5;
          end loop;
       end loop;
 
-      Test_Layer := Create_Layer (Number_Of_Neurons => Number_Of_Neurons,
-                                  Number_Of_Inputs  => Number_Of_Inputs,
-                                  Transfer          => Transfer,
-                                  Input_Weights     => Input_Weights'Unchecked_access,
-                                  Bias              => Bias);
-                                  
+      Test_Layer := Create_Layer(Number_Of_Neurons => Number_Of_Neurons,
+                                 Number_Of_Inputs  => Number_Of_Inputs,
+                                 Transfer          => Transfer,
+                                 Input_Weights     => Input_Weights'Unchecked_access,
+                                 Bias              => Bias);
                                   
       -- Fire neuron layer --
       Fire(Test_Layer,Input,Output);
       
       -- Evaluate output --
-      if Output(Output'First, Output'First)     = 0.75 and
+      if Output(Output'First,     Output'First) = 0.75 and
          Output(Output'First + 1, Output'First) = 0.75
       then
-         Test_Result := true;
+         Test_Result := True;
       end if;
       
-      Register_Test_Result(Test_Name,Test_Result,Input,Output);
+      Register_Test_Result(Test_Name, Test_Result, Input, Output);
       
    end Test_Create_Layer;
+
+   ------------------------
+   -- Test_PseudoInverse --
+   ------------------------
 
    procedure Test_PseudoInverse
    is
@@ -137,7 +124,7 @@ procedure Main is
                                       ( -1.0,  1.0 ),
                                       ( -1.0, -1.0 ) );
       Output      : Real_Matrix := PseudoInverse(Input);
-      Test_Name   : String      := "PseudoInverse";
+      Test_Name   : String      := "Test_PseudoInverse";
       Test_Result : Boolean     := False;  
    begin
 
@@ -145,13 +132,12 @@ procedure Main is
       if Output = ( (  0.25, -0.50, -0.25 ),
                     (  0.25,  0.50, -0.25 ) )
       then
-         Test_Result := true;
+         Test_Result := True;
       end if;
-      
-      Register_Test_Result(Test_Name,Test_Result,Input,Output);
+
+      Register_Test_Result(Test_Name, Test_Result, Input, Output);
 
    end Test_PseudoInverse;
-
 
    ----------------------------
    -- Test_Fire_Neural_Layer --
@@ -193,7 +179,7 @@ procedure Main is
          Test_Result := True;
       end if;
       
-      Register_Test_Result(Test_Name,Test_Result,Input,Output);
+      Register_Test_Result(Test_Name, Test_Result, Input, Output);
 
    end Test_Fire_Neural_Layer;
 
@@ -213,9 +199,9 @@ procedure Main is
 
       Prototypes  : aliased Real_Matrix := ( ( 1.0, -1.0, -1.0 ),
                                              ( 1.0,  1.0, -1.0 ) );
-      Input       : Real_Matrix         := (( Integer'First => -1.0 ),
-                                            ( Integer'First => -1.0 ),
-                                            ( Integer'First => -1.0 ) );
+      Input       : Real_Matrix         := ( ( Integer'First => -1.0 ),
+                                             ( Integer'First => -1.0 ),
+                                             ( Integer'First => -1.0 ) );
       Output      : Real_Matrix         := ( ( Integer'First =>  0.0 ),
                                              ( Integer'First =>  0.0 ) );
       Network     : Hamming_Network;
@@ -238,7 +224,7 @@ procedure Main is
          Test_Result := True;
       end if;
 
-      Register_Test_Result(Test_Name,Test_Result,Input,Output);
+      Register_Test_Result(Test_Name, Test_Result, Input, Output);
 
    end Test_Fire_Hamming_Network;
 
