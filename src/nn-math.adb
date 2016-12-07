@@ -24,18 +24,27 @@ with Ada.Numerics.Real_Arrays; use Ada.Numerics.Real_Arrays;
 
 package body NN.Math is
 
+   -------------------
+   -- PseudoInverse --
+   -------------------
+
    function PseudoInverse (Input : Real_Matrix) return Real_Matrix
    is
       Input_Transpose : Real_Matrix := Transpose(Input);
    begin
       return Inverse(Input_Transpose * Input) * Input_Transpose;
    end PseudoInverse; 
+
+   ------------------------
+   -- Create_Real_Matrix --
+   ------------------------
    
-   function Create_Real_Matrix (Rows : Natural; 
-                             Columns : Natural ) return Real_Matrix
+   function Create_Real_Matrix (Rows    : Natural;
+                                Columns : Natural) return Real_Matrix
    is
       Output : Real_Matrix(Integer'First .. Integer'First + Rows - 1,
                            Integer'First .. Integer'First + Columns - 1);
+      Pragma Warnings(Off, Output);
    begin
       return Output;
    end Create_Real_Matrix;
