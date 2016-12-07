@@ -24,6 +24,7 @@ with Ada.Numerics.Real_Arrays; use Ada.Numerics.Real_Arrays;
 with Ada.Text_IO;              use Ada.Text_IO;
 with NN.Transfer;              use NN.Transfer;
 with NN.Neuron;                use NN.Neuron;
+with NN;                       use NN;
 
 procedure Main is
 
@@ -44,9 +45,55 @@ procedure Main is
          for J in X'Range (2) loop
             Put (Fixed'Image (Fixed (X (I, J))));
          end loop;
+         New_Line;
       end loop;
-      New_Line;
    end Put;
+   
+   ----------------------------
+   --    Test_Create_Layer   --
+   ----------------------------
+   
+   procedure Test_Create_Layer
+
+   is
+      Number_Of_Neurons : Natural               := 3;
+      Number_Of_Inputs  : Natural               := 3;
+      Transfer          : Transfer_Function     := satlin'access;
+      Input_Weights     : Real_Matrix (Integer'First .. Integer'First + Number_Of_Inputs - 1,
+                                       Integer'First .. Integer'First + Number_Of_Neurons - 1);
+      Bias              : Float                 := 0.0;
+      Test_Layer        : Neural_Layer;
+      Input             : Real_Matrix (Integer'First .. Integer'First,
+                                       Integer'First .. Integer'First + Number_Of_Inputs - 1);
+      Output            : Real_Matrix (Integer'First .. Integer'First,
+                                       Integer'First .. Integer'First + Number_Of_Neurons - 1);
+   begin
+
+      for I in Input_Weights'Range (1) loop
+         for J in Input_Weights'Range (2) loop
+            Input_Weights(I,J) := 0.5;
+         end loop;
+      end loop;
+      
+      for I in Input'Range (1) loop
+         for J in Input'Range (2) loop
+            Input(I,J) := 0.5;
+         end loop;
+      end loop;
+      
+      Put(Input_Weights);
+
+      Test_Layer := Create_Layer (Number_Of_Neurons => Number_Of_Neurons,
+                                  Number_Of_Inputs  => Number_Of_Inputs,
+                                  Transfer          => Transfer,
+                                  Input_Weights     => Input_Weights,
+                                  Bias              => Bias);
+                                  
+      Fire(Test_Layer,Input,Output);
+      
+      Put(Output);
+      
+   end Test_Create_Layer;
 
    ----------------------------
    -- Test_Fire_Neural_Layer --
@@ -129,6 +176,7 @@ procedure Main is
 
 begin
       
+   Test_Create_Layer;
    Test_Fire_Neural_Layer;
    Demo_Fire_Delay_Block;
 
