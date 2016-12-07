@@ -37,7 +37,7 @@ procedure Main is
    GREEN   : constant String := Character'Val(16#1B#) & "[92m";
    RED     : constant String := Character'Val(16#1B#) & "[31m";
 
-   FULL_DEBUG : constant Boolean := True; -- Prints full debug info --
+   FULL_DEBUG : constant Boolean := False; -- Prints full debug info --
    
    ---------
    -- Put --
