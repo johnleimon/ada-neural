@@ -206,7 +206,7 @@ package body NN.Neuron is
 
    procedure Fire (Network : in out Hamming_Network;
                    Input   : in     Real_Matrix;
-                   Output  : out    Integer)
+                   Output  : out    Real_Matrix)
    is
       Recurrent_Output   : Real_Matrix(Integer'First .. Integer'First + Network.Recurrent.Neuron_Count - 1,
                                        Integer'First .. Integer'First);
@@ -227,7 +227,7 @@ package body NN.Neuron is
          Feedforward_Output := Recurrent_Output;
       end loop;
 
-      Output := Neuron_Fired - Integer'First;
+      Output := Recurrent_Output;
    end Fire;
 
 end NN.Neuron;

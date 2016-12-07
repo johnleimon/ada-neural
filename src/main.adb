@@ -126,7 +126,8 @@ procedure Main is
       Input      : Real_Matrix         := ( ( Integer'First => -1.0 ),
                                             ( Integer'First => -1.0 ),
                                             ( Integer'First => -1.0 ) );
-      Output     : Integer;
+      Output     : Real_Matrix         := ( ( Integer'First =>  0.0 ),
+                                            ( Integer'First =>  0.0 ) );
       Network    : Hamming_Network;
    begin
 
@@ -142,11 +143,12 @@ procedure Main is
       Put_Line("   INPUTS:  ");
       Put(Input);
 
-      Put("   OUTPUT: ");
-      Put_Line(Integer'Image(Output));
+      Put_Line("   OUTPUT: ");
+      Put(Output);
 
-      -- Evaluate output --
-      if Output = 0 then
+      if Output(Integer'First + 0, Integer'First) > 0.0 and
+         Output(Integer'First + 1, Integer'First) = 0.0
+      then
          Put_Line(GREEN & "   [ PASS ]" & DEFAULT);
       else
          Put_Line(RED   & "   [ FAIL ]" & DEFAULT);

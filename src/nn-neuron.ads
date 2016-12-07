@@ -82,6 +82,6 @@ package NN.Neuron is
 
    procedure Fire (Network : in  out Hamming_Network;
                    Input   : in      Real_Matrix;
-                   Output  : out     Integer);
+                   Output  : out     Real_Matrix);
 
 end NN.Neuron;
