@@ -30,5 +30,11 @@ package body NN.Math is
    begin
       return Inverse(Input_Transpose * Input) * Input_Transpose;
    end PseudoInverse; 
+   
+   function Create_Real_Matrix (Rows : natural, Columns : natural ) return Real_Matrix
+   is
+      return Real_Matrix (Integer'First + Rows - 1 .. Integer'First + Columns - 1);
+   begin
+   end Create_Real_Matrix
 
 end NN.Math;
