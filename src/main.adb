@@ -24,9 +24,38 @@ with Ada.Numerics.Real_Arrays; use Ada.Numerics.Real_Arrays;
 with Ada.Text_IO;              use Ada.Text_IO;
 with NN.IO;                    use NN.IO;
 with NN.Transfer;              use NN.Transfer;
+with NN.Math;                  use NN.Math;
 with NN.Neuron;                use NN.Neuron;
 
 procedure Main is
+
+   procedure Test_PseudoInverse
+   is
+      Input  : Real_Matrix :=  ( (  1.0,  1.0 ),
+                                 ( -1.0,  1.0 ),
+                                 ( -1.0, -1.0 ) );
+      Output : Real_Matrix := PseudoInverse(Input);
+   begin
+
+      Put_Line("Test: PseudoInverse");
+
+      Put_Line("   INPUT:  ");
+      Put(Input);
+
+      Put_Line("   OUTPUT: ");
+      Put(Output);
+
+      -- Evaluate Output --
+
+      if Output = ( (  0.25, -0.50, -0.25 ),
+                    (  0.25,  0.50, -0.25 ) )
+      then
+         Put_Line(GREEN & "   [ PASS ]" & DEFAULT);
+      else
+         Put_Line(RED   & "   [ FAIL ]" & DEFAULT);
+      end if;
+
+   end Test_PseudoInverse;
 
    ----------------------------
    -- Test_Fire_Neural_Layer --
@@ -94,9 +123,9 @@ procedure Main is
 
       Prototypes : aliased Real_Matrix := ( ( 1.0, -1.0, -1.0 ),
                                             ( 1.0,  1.0, -1.0 ) );
-      Input      : Real_Matrix         := ( ( Integer'First => -1.0 ),
-                                            ( Integer'First => -1.0 ),
-                                            ( Integer'First => -1.0 ) );
+      Input      : Real_Matrix         := ( ( Integer'First =>  1.0 ),
+                                            ( Integer'First =>  1.0 ),
+                                            ( Integer'First =>  1.0 ) );
       Output     : Integer;
       Network    : Hamming_Network;
    begin
@@ -129,5 +158,6 @@ begin
       
    Test_Fire_Neural_Layer;
    Test_Fire_Hamming_Network;
+   Test_PseudoInverse;
 
 end Main;

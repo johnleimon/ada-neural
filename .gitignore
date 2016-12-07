@@ -2,3 +2,6 @@
 *.swo
 *.o
 *.ali
+math
+b~*.adb
+b~*.ads

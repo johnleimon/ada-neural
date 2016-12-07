@@ -25,8 +25,8 @@ with Ada.Numerics.Real_Arrays; use Ada.Numerics.Real_Arrays;
 package body NN.Math is
 
    function PseudoInverse (Input : Real_Matrix) return Real_Matrix
-      Input_Transpose : constant := Transpose(Input);
    is
+      Input_Transpose : Real_Matrix := Transpose(Input);
    begin
       return Inverse(Input_Transpose * Input) * Input_Transpose;
    end PseudoInverse; 
