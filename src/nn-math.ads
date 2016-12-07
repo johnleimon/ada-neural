@@ -25,6 +25,7 @@ with Ada.Numerics.Real_Arrays; use Ada.Numerics.Real_Arrays;
 package NN.Math is
 
    function PseudoInverse (Input : Real_Matrix) return Real_Matrix;
-   function Create_Real_Matrix (Rows : natural, Columns : natural ) return Real_Matrix;
+   function Create_Real_Matrix (Rows : Natural; 
+                             Columns : Natural ) return Real_Matrix;
 
 end NN.Math;

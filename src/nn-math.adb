@@ -25,16 +25,19 @@ with Ada.Numerics.Real_Arrays; use Ada.Numerics.Real_Arrays;
 package body NN.Math is
 
    function PseudoInverse (Input : Real_Matrix) return Real_Matrix
-      Input_Transpose : constant := Transpose(Input);
    is
+      Input_Transpose : Real_Matrix := Transpose(Input);
    begin
       return Inverse(Input_Transpose * Input) * Input_Transpose;
    end PseudoInverse; 
    
-   function Create_Real_Matrix (Rows : natural, Columns : natural ) return Real_Matrix
+   function Create_Real_Matrix (Rows : Natural; 
+                             Columns : Natural ) return Real_Matrix
    is
-      return Real_Matrix (Integer'First + Rows - 1 .. Integer'First + Columns - 1);
+      Output : Real_Matrix(Integer'First .. Integer'First + Rows - 1,
+                           Integer'First .. Integer'First + Columns - 1);
    begin
-   end Create_Real_Matrix
+      return Output;
+   end Create_Real_Matrix;
 
 end NN.Math;
