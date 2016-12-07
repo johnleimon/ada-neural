@@ -26,8 +26,8 @@ with Ada.Unchecked_Deallocation;
 
 package NN.Neuron is
 
-   type Float_Array is array (Natural range <>) of Float;
-   type Transfer_Function_Array is array (Natural range <>) of Transfer_Function;
+   type Float_Array is array (Integer range <>) of Float;
+   type Transfer_Function_Array is array (Integer range <>) of Transfer_Function;
 
    type Float_Array_Access is access all Float_Array;
    type Real_Matrix_Access is access all Real_Matrix;
@@ -41,32 +41,29 @@ package NN.Neuron is
       Bias               : Float_Array_Access;
       Weights            : Real_Matrix_Access;
       Transfer_Functions : Transfer_Function_Array_Access;
+      Neuron_Count       : Integer;
    end record;
 
    type Neural_Network is array (Natural range <>) of Neural_Layer;
 
-   type Delay_Block is new Real_Matrix_Access;
-
    type Hamming_Network is record
       Feedforward : Neural_Layer;
       Recurrent   : Neural_Layer;
-      Block       : Delay_Block;
    end record;
-
-   function Create_Delay_Block (Number_Of_Neurons : Natural) return Delay_Block;
 
    function Create_Layer (Number_Of_Neurons : Natural;
                           Number_Of_Inputs  : Natural;
                           Transfer          : Transfer_Function;
-                          Input_Weights     : Real_Matrix;
+                          Input_Weights     : Real_Matrix_Access;
                           Bias              : Float := 0.0) return Neural_Layer
-   with Pre => Number_Of_Neurons > 0 and
-               Number_Of_Inputs > 0;
+                          with Pre => Number_Of_Neurons > 0 and
+                                      Number_Of_Inputs > 0;
 
    procedure Delete_Layer (Layer : in out Neural_Layer);
 
    function Create_Hamming_Network (Number_Of_Neurons : Natural;
                                     Number_Of_Inputs  : Natural;
+                                    Prototypes        : Real_Matrix_Access;
                                     Bias              : Float) return Hamming_Network;
 
    procedure Delete_Hamming_Network (Network : in out Hamming_Network);
@@ -83,16 +80,8 @@ package NN.Neuron is
                    with Pre => 
                         Output'Length = Network(Network'First).Weights'Length(2);
 
-   procedure Fire (Block  : in out Delay_Block;
-                   Input  : in     Real_Matrix;
-                   Output : out    Real_Matrix)
-                   with Pre => 
-                        Block'Length = Input'Length
-                                    and
-                        Input'Length = Output'Length;
-
    procedure Fire (Network : in  out Hamming_Network;
                    Input   : in      Real_Matrix;
-                   Output  : out     Real_Matrix);
+                   Output  : out     Integer);
 
 end NN.Neuron;

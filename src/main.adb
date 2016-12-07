@@ -1,6 +1,6 @@
 -----------------------------------------------------------------
 --                                                             --
--- Neuron                                                      --
+-- Ada Neural Network Test Program                             --
 --                                                             --
 -- Copyright (c) 2016, John Leimon                             --
 --                                                             --
@@ -22,6 +22,7 @@
 -----------------------------------------------------------------
 with Ada.Numerics.Real_Arrays; use Ada.Numerics.Real_Arrays;
 with Ada.Text_IO;              use Ada.Text_IO;
+with NN.IO;                    use NN.IO;
 with NN.Transfer;              use NN.Transfer;
 with NN.Neuron;                use NN.Neuron;
 with NN;                       use NN;
@@ -59,8 +60,8 @@ procedure Main is
       Number_Of_Neurons : Natural               := 3;
       Number_Of_Inputs  : Natural               := 3;
       Transfer          : Transfer_Function     := satlin'access;
-      Input_Weights     : Real_Matrix (Integer'First .. Integer'First + Number_Of_Inputs - 1,
-                                       Integer'First .. Integer'First + Number_Of_Neurons - 1);
+      Input_Weights     : Real_Matrix_Access    := new Real_Matrix (Integer'First .. Integer'First + Number_Of_Inputs - 1,
+                                                                    Integer'First .. Integer'First + Number_Of_Neurons - 1);
       Bias              : Float                 := 0.0;
       Test_Layer        : Neural_Layer;
       Input             : Real_Matrix (Integer'First .. Integer'First,
@@ -81,8 +82,6 @@ procedure Main is
          end loop;
       end loop;
       
-      Put(Input_Weights);
-
       Test_Layer := Create_Layer (Number_Of_Neurons => Number_Of_Neurons,
                                   Number_Of_Inputs  => Number_Of_Inputs,
                                   Transfer          => Transfer,
@@ -128,10 +127,10 @@ procedure Main is
 
       Put_Line("Test: Fire Neural Network Layer");
 
-      Put("   INPUTS:  ");
+      Put_Line("   INPUTS:  ");
       Put(Input);
 
-      Put("   OUTPUTS: ");
+      Put_Line("   OUTPUTS: ");
       Put(Output);
 
       -- Evaluate output --
@@ -145,39 +144,57 @@ procedure Main is
 
    end Test_Fire_Neural_Layer;
 
-   ---------------------------
-   -- Demo_Fire_Delay_Block --
-   ---------------------------
+   -------------------------------
+   -- Test_Fire_Hamming_Network --
+   -------------------------------
 
-   procedure Demo_Fire_Delay_Block
+   procedure Test_Fire_Hamming_Network
    is
-      Initial_Condition : aliased Real_Matrix := ( 1 => ( 1.0, 2.0 ) );
-      Input             :         Real_Matrix := ( 1 => ( 7.7, 9.9 ) );
-      Output_1          :         Real_Matrix := ( 1 => ( 0.0, 0.0 ) );
-      Output_2          :         Real_Matrix := ( 1 => ( 0.0, 0.0 ) );
-      Block             :         Delay_Block := Initial_Condition'unchecked_access;
+      -- Prototype Definitions:          --
+      --                                 --
+      --          |  1 |          |  1 | --
+      --          |    |          |    | --
+      -- Orange = | -1 |  Apple = |  1 | --
+      --          |    |          |    | --
+      --          | -1 |          | -1 | --
+
+      Prototypes : aliased Real_Matrix := ( ( 1.0, -1.0, -1.0 ),
+                                            ( 1.0,  1.0, -1.0 ) );
+      Input      : Real_Matrix         := ( ( Integer'First => -1.0 ),
+                                            ( Integer'First => -1.0 ),
+                                            ( Integer'First => -1.0 ) );
+      Output     : Integer;
+      Network    : Hamming_Network;
    begin
 
-      Fire(Block, Input, Output_1);
-      Fire(Block, Input, Output_2);
+      Network := Create_Hamming_Network(Number_Of_Neurons => 2,
+                                        Number_Of_Inputs  => 3,
+                                        Prototypes        => Prototypes'Unchecked_Access,
+                                        Bias              => 3.0);
 
-      Put_Line("Demo: Fire Delay Block");
+      Put_Line("Test: Fire Hamming Network");
 
-      Put("   INPUTS:  ");
+      Fire(Network, Input, Output);
+
+      Put_Line("   INPUTS:  ");
       Put(Input);
 
-      Put("   OUTPUT 1:");
-      Put(Output_1);
+      Put("   OUTPUT: ");
+      Put_Line(Integer'Image(Output));
 
-      Put("   OUTPUT 2:");
-      Put(Output_2);
+      -- Evaluate output --
+      if Output = 0 then
+         Put_Line(GREEN & "   [ PASS ]" & DEFAULT);
+      else
+         Put_Line(RED   & "   [ FAIL ]" & DEFAULT);
+      end if;
 
-   end Demo_Fire_Delay_Block;
+   end Test_Fire_Hamming_Network;
 
 begin
       
    Test_Create_Layer;
    Test_Fire_Neural_Layer;
-   Demo_Fire_Delay_Block;
+   Test_Fire_Hamming_Network;
 
 end Main;
