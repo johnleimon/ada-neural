@@ -73,7 +73,7 @@ package body NN.Neuron is
                           Input_Weights     : Real_Matrix_Access;
                           Bias              : Float := 0.0) return Neural_Layer
    is
-      Bias_Array     : Float_Array_Access := new Float_Array(Integer'First .. Integer'First + Number_Of_Neurons);
+      Bias_Array     : Float_Array_Access             := new Float_Array(Integer'First .. Integer'First + Number_Of_Neurons);
       Transfer_Array : Transfer_Function_Array_Access := new Transfer_Function_Array(Integer'First .. Integer'First + Number_Of_Neurons);
       Output         : Neural_Layer;
    begin

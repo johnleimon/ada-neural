@@ -44,7 +44,7 @@ procedure Main is
    begin
       for I in X'Range (1) loop
          for J in X'Range (2) loop
-            Put (Fixed'Image (Fixed (X (I, J))));
+            Put (Float'Image(X (I, J)));
          end loop;
          New_Line;
       end loop;
@@ -57,30 +57,36 @@ procedure Main is
    procedure Test_Create_Layer
 
    is
-      Number_Of_Neurons : Natural               := 3;
+      Number_Of_Neurons : Natural               := 2;
       Number_Of_Inputs  : Natural               := 3;
       Transfer          : Transfer_Function     := satlin'access;
-      Input_Weights     : Real_Matrix_Access    := new Real_Matrix (Integer'First .. Integer'First + Number_Of_Inputs - 1,
-                                                                    Integer'First .. Integer'First + Number_Of_Neurons - 1);
+      Input_Weights     : Real_Matrix_Access    := new Real_Matrix (Integer'First .. Integer'First + Number_Of_Neurons - 1,
+                                                                    Integer'First .. Integer'First + Number_Of_Inputs - 1);
       Bias              : Float                 := 0.0;
       Test_Layer        : Neural_Layer;
-      Input             : Real_Matrix (Integer'First .. Integer'First,
-                                       Integer'First .. Integer'First + Number_Of_Inputs - 1);
-      Output            : Real_Matrix (Integer'First .. Integer'First,
-                                       Integer'First .. Integer'First + Number_Of_Neurons - 1);
+      Input             : Real_Matrix (Integer'First .. Integer'First + Number_Of_Inputs - 1,
+                                       Integer'First .. Integer'First);
+      Output            : Real_Matrix (Integer'First .. Integer'First + Number_Of_Neurons - 1,
+                                       Integer'First .. Integer'First);
    begin
+
 
       for I in Input_Weights'Range (1) loop
          for J in Input_Weights'Range (2) loop
             Input_Weights(I,J) := 0.5;
          end loop;
       end loop;
-      
+
       for I in Input'Range (1) loop
          for J in Input'Range (2) loop
             Input(I,J) := 0.5;
          end loop;
       end loop;
+
+put_line("INPUT");
+put(input);
+put_line("WEIGHTS");
+put(input_weights.all);
       
       Test_Layer := Create_Layer (Number_Of_Neurons => Number_Of_Neurons,
                                   Number_Of_Inputs  => Number_Of_Inputs,
@@ -90,6 +96,9 @@ procedure Main is
                                   
       Fire(Test_Layer,Input,Output);
       
+put_line("OUTPUT");
+put(output);
+
       Put(Output);
       
    end Test_Create_Layer;
@@ -193,8 +202,8 @@ procedure Main is
 
 begin
       
-   Test_Create_Layer;
    Test_Fire_Neural_Layer;
    Test_Fire_Hamming_Network;
+   Test_Create_Layer;
 
 end Main;
