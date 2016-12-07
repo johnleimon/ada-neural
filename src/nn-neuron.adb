@@ -73,8 +73,8 @@ package body NN.Neuron is
                           Input_Weights     : Real_Matrix_Access;
                           Bias              : Float := 0.0) return Neural_Layer
    is
-      Bias_Array     : Float_Array_Access             := new Float_Array(Integer'First .. Integer'First + Number_Of_Neurons);
-      Transfer_Array : Transfer_Function_Array_Access := new Transfer_Function_Array(Integer'First .. Integer'First + Number_Of_Neurons);
+      Bias_Array     : Float_Array_Access             := new Float_Array(Integer'First .. Integer'First + Number_Of_Neurons - 1);
+      Transfer_Array : Transfer_Function_Array_Access := new Transfer_Function_Array(Integer'First .. Integer'First + Number_Of_Neurons - 1);
       Output         : Neural_Layer;
    begin
 
@@ -206,7 +206,7 @@ package body NN.Neuron is
 
    procedure Fire (Network : in out Hamming_Network;
                    Input   : in     Real_Matrix;
-                   Output  : out    Integer)
+                   Output  : out    Real_Matrix)
    is
       Recurrent_Output   : Real_Matrix(Integer'First .. Integer'First + Network.Recurrent.Neuron_Count - 1,
                                        Integer'First .. Integer'First);
@@ -227,7 +227,7 @@ package body NN.Neuron is
          Feedforward_Output := Recurrent_Output;
       end loop;
 
-      Output := Neuron_Fired - Integer'First;
+      Output := Recurrent_Output;
    end Fire;
 
 end NN.Neuron;

@@ -24,8 +24,9 @@ package body ada_main is
    E014 : Short_Integer; pragma Import (Ada, E014, "system__secondary_stack_E");
    E071 : Short_Integer; pragma Import (Ada, E071, "ada__text_io_E");
    E092 : Short_Integer; pragma Import (Ada, E092, "nn__io_E");
-   E110 : Short_Integer; pragma Import (Ada, E110, "nn__neuron_E");
-   E112 : Short_Integer; pragma Import (Ada, E112, "nn__transfer_E");
+   E110 : Short_Integer; pragma Import (Ada, E110, "nn__math_E");
+   E112 : Short_Integer; pragma Import (Ada, E112, "nn__neuron_E");
+   E114 : Short_Integer; pragma Import (Ada, E114, "nn__transfer_E");
 
    Local_Priority_Specific_Dispatching : constant String := "";
    Local_Interrupt_States : constant String := "";
@@ -175,9 +176,10 @@ package body ada_main is
       Ada.Text_Io'Elab_Body;
       E071 := E071 + 1;
       E092 := E092 + 1;
-      NN.TRANSFER'ELAB_BODY;
-      E112 := E112 + 1;
       E110 := E110 + 1;
+      NN.TRANSFER'ELAB_BODY;
+      E114 := E114 + 1;
+      E112 := E112 + 1;
    end adainit;
 
    procedure Ada_Main_Program;
@@ -215,6 +217,7 @@ package body ada_main is
 --  BEGIN Object file/option list
    --   ./nn.o
    --   ./nn-io.o
+   --   ./nn-math.o
    --   ./nn-transfer.o
    --   ./nn-neuron.o
    --   ./main.o

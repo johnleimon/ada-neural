@@ -131,6 +131,28 @@ procedure Main is
       
    end Test_Create_Layer;
 
+   procedure Test_PseudoInverse
+   is
+      Input       : Real_Matrix :=  ( (  1.0,  1.0 ),
+                                      ( -1.0,  1.0 ),
+                                      ( -1.0, -1.0 ) );
+      Output      : Real_Matrix := PseudoInverse(Input);
+      Test_Name   : String      := "PseudoInverse";
+      Test_Result : Boolean     := False;  
+   begin
+
+      -- Evaluate Output --
+      if Output = ( (  0.25, -0.50, -0.25 ),
+                    (  0.25,  0.50, -0.25 ) )
+      then
+         Test_Result := true;
+      end if;
+      
+      Register_Test_Result(Test_Name,Test_Result,Input,Output);
+
+   end Test_PseudoInverse;
+
+
    ----------------------------
    -- Test_Fire_Neural_Layer --
    ----------------------------
@@ -194,7 +216,8 @@ procedure Main is
       Input       : Real_Matrix         := (( Integer'First => -1.0 ),
                                             ( Integer'First => -1.0 ),
                                             ( Integer'First => -1.0 ) );
-      Output      : Integer;
+      Output      : Real_Matrix         := ( ( Integer'First =>  0.0 ),
+                                             ( Integer'First =>  0.0 ) );
       Network     : Hamming_Network;
       Test_Name   : String              := "Fire Hamming Network";
       Test_Result : Boolean             := False;
@@ -209,12 +232,13 @@ procedure Main is
       -- Fire Hamming Network layers --
       Fire(Network, Input, Output);
 
-      -- Evaluate output --
-      if Output = 0 then
+      if Output(Integer'First + 0, Integer'First) > 0.0 and
+         Output(Integer'First + 1, Integer'First) = 0.0
+      then
          Test_Result := True;
       end if;
 
-      --Register_Test_Result(Test_Name,Test_Result,Input,Output);
+      Register_Test_Result(Test_Name,Test_Result,Input,Output);
 
    end Test_Fire_Hamming_Network;
 
@@ -222,6 +246,7 @@ begin
       
    Test_Create_Layer;
    Test_Fire_Neural_Layer;
-   --Test_Fire_Hamming_Network;
+   Test_Fire_Hamming_Network;
+   Test_PseudoInverse;
 
 end Main;
