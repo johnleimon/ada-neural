@@ -61,10 +61,10 @@ procedure Main is
 
       Put_Line("Test: Fire Neural Network Layer");
 
-      Put("   INPUTS:  ");
+      Put_Line("   INPUTS:  ");
       Put(Input);
 
-      Put("   OUTPUTS: ");
+      Put_Line("   OUTPUTS: ");
       Put(Output);
 
       -- Evaluate output --

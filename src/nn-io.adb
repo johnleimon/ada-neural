@@ -34,7 +34,11 @@ package body NN.IO is
    begin
       for I in Matrix'Range (1) loop
          for J in Matrix'Range (2) loop
-            Put(Float'Image(Matrix(I, J)) & " ");
+            Put("   ");
+            Float_Text_IO.Put(Item => Matrix(I, J),
+                              Fore =>  3,
+                              Aft  => 15,
+                              Exp  => 0);
          end loop;
       New_Line;
       end loop;

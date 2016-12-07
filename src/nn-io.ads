@@ -21,8 +21,11 @@
 -- THIS SOFTWARE.                                              --
 -----------------------------------------------------------------
 with Ada.Numerics.Real_Arrays; use Ada.Numerics.Real_Arrays;
+with Ada.Text_IO;              use Ada.Text_IO;
 
 package NN.IO is
+
+   package Float_Text_IO is new Float_IO(Float);
 
    DEFAULT : constant String := Character'Val(16#1B#) & "[39m";
    GREEN   : constant String := Character'Val(16#1B#) & "[92m";
