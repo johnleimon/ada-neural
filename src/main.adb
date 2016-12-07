@@ -1,6 +1,6 @@
 -----------------------------------------------------------------
 --                                                             --
--- Neuron                                                      --
+-- Ada Neural Network Test Program                             --
 --                                                             --
 -- Copyright (c) 2016, John Leimon                             --
 --                                                             --
@@ -22,31 +22,11 @@
 -----------------------------------------------------------------
 with Ada.Numerics.Real_Arrays; use Ada.Numerics.Real_Arrays;
 with Ada.Text_IO;              use Ada.Text_IO;
+with NN.IO;                    use NN.IO;
 with NN.Transfer;              use NN.Transfer;
 with NN.Neuron;                use NN.Neuron;
 
 procedure Main is
-
-   type Fixed is delta 0.01 range -100.0..100.0;
-
-   DEFAULT : constant String := Character'Val(16#1B#) & "[39m";
-   GREEN   : constant String := Character'Val(16#1B#) & "[92m";
-   RED     : constant String := Character'Val(16#1B#) & "[31m";
-
-   ---------
-   -- Put --
-   ---------
-
-   procedure Put (X : Real_Matrix)
-   is
-   begin
-      for I in X'Range (1) loop
-         for J in X'Range (2) loop
-            Put (Fixed'Image (Fixed (X (I, J))));
-         end loop;
-      end loop;
-      New_Line;
-   end Put;
 
    ----------------------------
    -- Test_Fire_Neural_Layer --
@@ -116,13 +96,13 @@ procedure Main is
 
       Put_Line("Demo: Fire Delay Block");
 
-      Put("   INPUTS:  ");
+      Put_Line("   INPUTS:  ");
       Put(Input);
 
-      Put("   OUTPUT 1:");
+      Put_Line("   OUTPUT 1:");
       Put(Output_1);
 
-      Put("   OUTPUT 2:");
+      Put_Line("   OUTPUT 2:");
       Put(Output_2);
 
    end Demo_Fire_Delay_Block;
@@ -135,23 +115,27 @@ procedure Main is
    is
       Prototypes : aliased Real_Matrix := ( ( 1.0, -1.0, -1.0 ),
                                             ( 1.0,  1.0, -1.0 ) );
-      Input      : Real_Matrix         :=  ( ( Integer'First =>  1.0 ),
+      Input      : Real_Matrix         :=  ( ( Integer'First => -1.0 ),
+                                             ( Integer'First => -1.0 ),
                                              ( Integer'First => -1.0 ) );
       Output     : Real_Matrix         :=  ( ( Integer'First =>  0.0 ),
                                              ( Integer'First =>  0.0 ) );
       Network    : Hamming_Network;
    begin
 
-      Network := Create_Hamming_Network(2, 3, Prototypes'Unchecked_Access, 3.0);
+      Network := Create_Hamming_Network(Number_Of_Neurons => 2,
+                                        Number_Of_Inputs  => 3,
+                                        Prototypes        => Prototypes'Unchecked_Access,
+                                        Bias              => 3.0);
 
       Put_Line("Test: Fire Hamming Network");
 
       Fire(Network, Input, Output);
 
-      Put("   INPUTS:  ");
+      Put_Line("   INPUTS:  ");
       Put(Input);
 
-      Put("   OUTPUTS: ");
+      Put_Line("   OUTPUTS: ");
       Put(Output);
 
    end Test_Fire_Hamming_Network;

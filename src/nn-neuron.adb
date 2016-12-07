@@ -22,6 +22,7 @@
 -----------------------------------------------------------------
 with Ada.Text_IO; use Ada.Text_IO;
 with NN.Transfer; use NN.Transfer;
+with NN.IO;       use NN.IO;
 
 package body NN.Neuron is
 
@@ -35,12 +36,15 @@ package body NN.Neuron is
                           Input_Weights     : Real_Matrix_Access;
                           Bias              : Float := 0.0) return Neural_Layer
    is
-      Bias_Array     : aliased Float_Array := (1 .. Number_Of_Neurons => Bias);
-      Transfer_Array : Transfer_Function_Array_Access := new Transfer_Function_Array(1 .. Number_Of_Neurons);
+      Bias_Array     : Float_Array_Access := new Float_Array(Integer'First .. Integer'First + Number_Of_Neurons);
+      Transfer_Array : Transfer_Function_Array_Access := new Transfer_Function_Array(Integer'First .. Integer'First + Number_Of_Neurons);
       Output         : Neural_Layer;
    begin
 
-      Output.Bias               := Bias_Array'Unchecked_Access;
+      Bias_Array.all     := (others => Bias);
+      Transfer_Array.all := (others => Transfer);
+
+      Output.Bias               := Bias_Array;
       Output.Weights            := Input_Weights;
       Output.Transfer_Functions := Transfer_Array;
 
@@ -85,8 +89,8 @@ package body NN.Neuron is
    is
       ε                       : constant := 0.5;
       Output                  : Hamming_Network;
-      Recurrent_Input_Weights : Real_Matrix_Access := new Real_Matrix (Integer'First .. Integer'First + Number_Of_Neurons,
-                                                                       Integer'First .. Integer'First + Prototypes'Length(2) - 1);
+      Recurrent_Input_Weights : Real_Matrix_Access := new Real_Matrix (Integer'First .. Integer'First + Number_Of_Neurons - 1,
+                                                                       Integer'First .. Integer'First + Number_Of_Neurons - 1);
    begin
 
       -- Our recurrent input weights matrix for a 2 x 2 matrix --
@@ -141,13 +145,10 @@ package body NN.Neuron is
                    Input  : in  Real_Matrix;
                    Output : out Real_Matrix)
    is
-      BiasTransfer_Index : Natural;
       Weight             : Float;
       Sum                : Float; 
    begin
 
-      BiasTransfer_Index := 0;
-      
       for Neuron_Index in Layer.Weights'Range(1) loop
          Sum := 0.0;
          
@@ -156,9 +157,8 @@ package body NN.Neuron is
             Sum    := Sum + Input(Input_Index, Integer'First) * Weight;
          end loop;
 
-         Sum                                := Sum + Layer.Bias(BiasTransfer_Index); 
-         Output(Neuron_Index,Integer'First) := Layer.Transfer_Functions(BiasTransfer_Index)(Sum);
-         BiasTransfer_Index                 := BiasTransfer_Index + 1;
+         Sum                                 := Sum + Layer.Bias(Neuron_Index); 
+         Output(Neuron_Index, Integer'First) := Layer.Transfer_Functions(Neuron_Index)(Sum);
       end loop;
    end Fire;
 
@@ -200,7 +200,8 @@ package body NN.Neuron is
                    Input   : in     Real_Matrix;
                    Output  : out    Real_Matrix)
    is
-      Feedforward_Output : Real_Matrix(1 .. 1, Output'First .. Output'Last);
+      Feedforward_Output : Real_Matrix(Output'First .. Output'Last,
+                                       Integer'First .. Integer'First);
    begin
 
       -- Feedforward layer --
@@ -209,6 +210,7 @@ package body NN.Neuron is
       -- Recurrent layer --
       loop
          Fire(Network.Recurrent, Feedforward_Output, Output);
+         Feedforward_Output := Output;
          exit when Input = Feedforward_Output;
       end loop;
    end Fire;

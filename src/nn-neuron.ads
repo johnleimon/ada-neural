@@ -26,8 +26,8 @@ with Ada.Unchecked_Deallocation;
 
 package NN.Neuron is
 
-   type Float_Array is array (Natural range <>) of Float;
-   type Transfer_Function_Array is array (Natural range <>) of Transfer_Function;
+   type Float_Array is array (Integer range <>) of Float;
+   type Transfer_Function_Array is array (Integer range <>) of Transfer_Function;
 
    type Float_Array_Access is access all Float_Array;
    type Real_Matrix_Access is access all Real_Matrix;
