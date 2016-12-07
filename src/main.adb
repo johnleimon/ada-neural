@@ -22,10 +22,12 @@
 -----------------------------------------------------------------
 with Ada.Numerics.Real_Arrays; use Ada.Numerics.Real_Arrays;
 with Ada.Text_IO;              use Ada.Text_IO;
-with NN.IO;                    use NN.IO;
-with NN.Transfer;              use NN.Transfer;
-with NN.Neuron;                use NN.Neuron;
 with NN;                       use NN;
+with NN.IO;                    use NN.IO;
+with NN.Math;                  use NN.Math;
+with NN.Neuron;                use NN.Neuron;
+with NN.Transfer;              use NN.Transfer;
+
 
 procedure Main is
 
@@ -35,6 +37,8 @@ procedure Main is
    GREEN   : constant String := Character'Val(16#1B#) & "[92m";
    RED     : constant String := Character'Val(16#1B#) & "[31m";
 
+   FULL_DEBUG : constant Boolean := False; -- Prints full debug info --
+   
    ---------
    -- Put --
    ---------
@@ -50,6 +54,30 @@ procedure Main is
       end loop;
    end Put;
    
+   --------------------------
+   -- Register_Test_Result --
+   --------------------------
+   
+   procedure Register_Test_Result (Test_Name   : String;
+                                        Pass   : Boolean;
+                                        Input  : Real_Matrix;
+                                        Output : Real_Matrix)
+   is
+   begin
+      if Pass then
+         Put_Line(GREEN & Test_Name & "   [ PASS ]" & DEFAULT);
+      else
+         Put_Line(RED   & Test_Name & "   [ FAIL ]" & DEFAULT);
+      end if;
+      if FULL_DEBUG then
+         Put_Line("   INPUT:  ");
+         Put(Input);
+         Put_Line("   OUTPUT: ");
+         Put(Output);
+      end if;
+   end Register_Test_Result;
+   
+   
    ----------------------------
    --    Test_Create_Layer   --
    ----------------------------
@@ -60,17 +88,16 @@ procedure Main is
       Number_Of_Neurons : Natural               := 2;
       Number_Of_Inputs  : Natural               := 3;
       Transfer          : Transfer_Function     := satlin'access;
-      Input_Weights     : Real_Matrix_Access    := new Real_Matrix (Integer'First .. Integer'First + Number_Of_Neurons - 1,
-                                                                    Integer'First .. Integer'First + Number_Of_Inputs - 1);
+      Input_Weights     : aliased Real_Matrix   := Create_Real_Matrix(Number_Of_Neurons,Number_Of_Inputs);
       Bias              : Float                 := 0.0;
       Test_Layer        : Neural_Layer;
-      Input             : Real_Matrix (Integer'First .. Integer'First + Number_Of_Inputs - 1,
-                                       Integer'First .. Integer'First);
-      Output            : Real_Matrix (Integer'First .. Integer'First + Number_Of_Neurons - 1,
-                                       Integer'First .. Integer'First);
+      Input             : Real_Matrix           := Create_Real_Matrix(Number_Of_Inputs,1);
+      Output            : Real_Matrix           := Create_Real_Matrix(Number_Of_Neurons,1);  
+      Test_Name  : String                       := "Fire Layer from Create_Layer";
+      Test_Result : Boolean                     := False;                           
    begin
 
-
+      -- Setup neuron layer --
       for I in Input_Weights'Range (1) loop
          for J in Input_Weights'Range (2) loop
             Input_Weights(I,J) := 0.5;
@@ -83,23 +110,24 @@ procedure Main is
          end loop;
       end loop;
 
-put_line("INPUT");
-put(input);
-put_line("WEIGHTS");
-put(input_weights.all);
-      
       Test_Layer := Create_Layer (Number_Of_Neurons => Number_Of_Neurons,
                                   Number_Of_Inputs  => Number_Of_Inputs,
                                   Transfer          => Transfer,
-                                  Input_Weights     => Input_Weights,
+                                  Input_Weights     => Input_Weights'Unchecked_access,
                                   Bias              => Bias);
                                   
+                                  
+      -- Fire neuron layer --
       Fire(Test_Layer,Input,Output);
       
-put_line("OUTPUT");
-put(output);
-
-      Put(Output);
+      -- Evaluate output --
+      if Output(Output'First, Output'First)     = 0.4 and
+         Output(Output'First + 1, Output'First) = 0.3
+      then
+         Test_Result := true;
+      end if;
+      
+      Register_Test_Result(Test_Name,Test_Result,Input,Output);
       
    end Test_Create_Layer;
 
@@ -110,20 +138,22 @@ put(output);
    procedure Test_Fire_Neural_Layer
    is
 
-      Bias     : aliased Float_Array :=  ( 0.1, -0.06 );
+      Bias        : aliased Float_Array :=  ( 0.1, -0.06 );
       -- Two Neurons, Three Weights --
-      Weights  : aliased Real_Matrix := ( ( 0.5, 0.5, 0.5 ),
-                                          ( 0.7, 0.1, 0.9 ) );
-      Input    : Real_Matrix         :=  ( ( Integer'First => 0.1 ),
-                                           ( Integer'First => 0.2 ),
-                                           ( Integer'First => 0.3 ) );
-      Output   : Real_Matrix         :=  ( ( Integer'First => 0.0 ),
-                                           ( Integer'First => 0.0 ),
-                                           ( Integer'First => 0.0 ) );
-      Transfer : aliased Transfer_Function_Array := (satlin'access,
-                                                     satlin'access,
-                                                     satlin'access);
-      Layer    : Neural_Layer;
+      Weights     : aliased Real_Matrix := ( ( 0.5, 0.5, 0.5 ),
+                                             ( 0.7, 0.1, 0.9 ) );
+      Input       : Real_Matrix         := ( ( Integer'First => 0.1 ),
+                                             ( Integer'First => 0.2 ),
+                                             ( Integer'First => 0.3 ) );
+      Output      : Real_Matrix         := ( ( Integer'First => 0.0 ),
+                                             ( Integer'First => 0.0 ),
+                                             ( Integer'First => 0.0 ) );
+      Transfer    : aliased Transfer_Function_Array := (satlin'access,
+                                                        satlin'access,
+                                                        satlin'access);
+      Layer       : Neural_Layer;
+      Test_Name   : String              := "Fire Neural Network Layer";
+      Test_Result : Boolean             := False;
    begin
 
       -- Setup neuron layer --
@@ -134,22 +164,14 @@ put(output);
       -- Fire neuron layer --
       Fire(Layer, Input, Output);
 
-      Put_Line("Test: Fire Neural Network Layer");
-
-      Put_Line("   INPUTS:  ");
-      Put(Input);
-
-      Put_Line("   OUTPUTS: ");
-      Put(Output);
-
       -- Evaluate output --
       if Output(Output'First, Output'First)     = 0.4 and
          Output(Output'First + 1, Output'First) = 0.3
       then
-         Put_Line(GREEN & "   [ PASS ]" & DEFAULT);
-      else
-         Put_Line(RED   & "   [ FAIL ]" & DEFAULT);
+         Test_Result := True;
       end if;
+      
+      Register_Test_Result(Test_Name,Test_Result,Input,Output);
 
    end Test_Fire_Neural_Layer;
 
@@ -167,41 +189,38 @@ put(output);
       --          |    |          |    | --
       --          | -1 |          | -1 | --
 
-      Prototypes : aliased Real_Matrix := ( ( 1.0, -1.0, -1.0 ),
-                                            ( 1.0,  1.0, -1.0 ) );
-      Input      : Real_Matrix         := ( ( Integer'First => -1.0 ),
+      Prototypes  : aliased Real_Matrix := ( ( 1.0, -1.0, -1.0 ),
+                                             ( 1.0,  1.0, -1.0 ) );
+      Input       : Real_Matrix         := (( Integer'First => -1.0 ),
                                             ( Integer'First => -1.0 ),
                                             ( Integer'First => -1.0 ) );
-      Output     : Integer;
-      Network    : Hamming_Network;
+      Output      : Integer;
+      Network     : Hamming_Network;
+      Test_Name   : String              := "Fire Hamming Network";
+      Test_Result : Boolean             := False;
    begin
 
+      -- Setup Hamming Network layers --
       Network := Create_Hamming_Network(Number_Of_Neurons => 2,
                                         Number_Of_Inputs  => 3,
                                         Prototypes        => Prototypes'Unchecked_Access,
                                         Bias              => 3.0);
-
-      Put_Line("Test: Fire Hamming Network");
-
+                                 
+      -- Fire Hamming Network layers --
       Fire(Network, Input, Output);
-
-      Put_Line("   INPUTS:  ");
-      Put(Input);
-
-      Put("   OUTPUT: ");
-      Put_Line(Integer'Image(Output));
 
       -- Evaluate output --
       if Output = 0 then
-         Put_Line(GREEN & "   [ PASS ]" & DEFAULT);
-      else
-         Put_Line(RED   & "   [ FAIL ]" & DEFAULT);
+         Test_Result := True;
       end if;
+
+      Register_Test_Result(Test_Name,Test_Result,Input,Output);
 
    end Test_Fire_Hamming_Network;
 
 begin
       
+   Test_Create_Layer;
    Test_Fire_Neural_Layer;
    Test_Fire_Hamming_Network;
    Test_Create_Layer;
