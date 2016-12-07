@@ -37,11 +37,24 @@ package body NN.IO is
             Put("   ");
             Float_Text_IO.Put(Item => Matrix(I, J),
                               Fore =>  3,
-                              Aft  => 15,
-                              Exp  => 0);
+                              Aft  => 12,
+                              Exp  =>  0);
          end loop;
       New_Line;
       end loop;
    end Put;
+
+   --------------
+   -- Put_Float --
+   --------------
+
+   procedure Put_Float (Input : Float)
+   is
+   begin
+      Float_Text_IO.Put(Item => Input,
+                        Fore =>  3,
+                        Aft  => 12,
+                        Exp  =>  0);
+   end Put_Float;
 
 end NN.IO;

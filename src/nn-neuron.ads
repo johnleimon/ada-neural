@@ -41,6 +41,7 @@ package NN.Neuron is
       Bias               : Float_Array_Access;
       Weights            : Real_Matrix_Access;
       Transfer_Functions : Transfer_Function_Array_Access;
+      Neuron_Count       : Integer;
    end record;
 
    type Neural_Network is array (Natural range <>) of Neural_Layer;
@@ -55,8 +56,8 @@ package NN.Neuron is
                           Transfer          : Transfer_Function;
                           Input_Weights     : Real_Matrix_Access;
                           Bias              : Float := 0.0) return Neural_Layer
-   with Pre => Number_Of_Neurons > 0 and
-               Number_Of_Inputs > 0;
+                          with Pre => Number_Of_Neurons > 0 and
+                                      Number_Of_Inputs > 0;
 
    procedure Delete_Layer (Layer : in out Neural_Layer);
 
@@ -81,6 +82,6 @@ package NN.Neuron is
 
    procedure Fire (Network : in  out Hamming_Network;
                    Input   : in      Real_Matrix;
-                   Output  : out     Real_Matrix);
+                   Output  : out     Integer);
 
 end NN.Neuron;

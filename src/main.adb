@@ -84,13 +84,20 @@ procedure Main is
 
    procedure Test_Fire_Hamming_Network
    is
+      -- Prototype Definitions:          --
+      --                                 --
+      --          |  1 |          |  1 | --
+      --          |    |          |    | --
+      -- Orange = | -1 |  Apple = |  1 | --
+      --          |    |          |    | --
+      --          | -1 |          | -1 | --
+
       Prototypes : aliased Real_Matrix := ( ( 1.0, -1.0, -1.0 ),
                                             ( 1.0,  1.0, -1.0 ) );
-      Input      : Real_Matrix         :=  ( ( Integer'First => -1.0 ),
-                                             ( Integer'First => -1.0 ),
-                                             ( Integer'First => -1.0 ) );
-      Output     : Real_Matrix         :=  ( ( Integer'First =>  0.0 ),
-                                             ( Integer'First =>  0.0 ) );
+      Input      : Real_Matrix         := ( ( Integer'First => -1.0 ),
+                                            ( Integer'First => -1.0 ),
+                                            ( Integer'First => -1.0 ) );
+      Output     : Integer;
       Network    : Hamming_Network;
    begin
 
@@ -106,8 +113,15 @@ procedure Main is
       Put_Line("   INPUTS:  ");
       Put(Input);
 
-      Put_Line("   OUTPUTS: ");
-      Put(Output);
+      Put("   OUTPUT: ");
+      Put_Line(Integer'Image(Output));
+
+      -- Evaluate output --
+      if Output = 0 then
+         Put_Line(GREEN & "   [ PASS ]" & DEFAULT);
+      else
+         Put_Line(RED   & "   [ FAIL ]" & DEFAULT);
+      end if;
 
    end Test_Fire_Hamming_Network;
 

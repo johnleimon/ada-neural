@@ -33,4 +33,6 @@ package NN.IO is
 
    procedure Put (Matrix : Real_Matrix);
 
+   procedure Put_Float (Input : Float);
+
 end NN.IO;

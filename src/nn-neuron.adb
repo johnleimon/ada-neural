@@ -26,6 +26,43 @@ with NN.IO;       use NN.IO;
 
 package body NN.Neuron is
 
+   --------------------------
+   -- Identify_Convergence --
+   --------------------------
+
+   procedure Identify_Convergence (Neuron_Outputs : in  Real_Matrix;
+                                   Has_Converged  : out Boolean;
+                                   Neuron_Fired   : out Integer)
+   is
+      Non_Zero_Count : Natural := 0;
+   begin
+
+      -- A Hamming Network has converged when all neuron --
+      -- outputs except exactly one are zero.            --
+
+      -- Count neurons with zero output --
+      for I in Neuron_Outputs'Range(1) loop
+         for J in Neuron_Outputs'Range(2) loop
+            if Neuron_Outputs(I, J) /= 0.0 then
+               Neuron_Fired   := I;
+               Non_Zero_Count := Non_Zero_Count + 1;
+            end if;
+            if Non_Zero_Count > 1 then
+               Has_Converged := False;
+               Neuron_Fired  := 0;
+               return;
+            end if;
+         end loop;
+      end loop;
+
+      if Non_Zero_Count = 1 then
+         Has_Converged := True;
+      else
+         Has_Converged := False;
+      end if;
+
+   end Identify_Convergence;
+
    ------------------
    -- Create_Layer --
    ------------------
@@ -47,6 +84,7 @@ package body NN.Neuron is
       Output.Bias               := Bias_Array;
       Output.Weights            := Input_Weights;
       Output.Transfer_Functions := Transfer_Array;
+      Output.Neuron_Count       := Number_Of_Neurons;
 
       return Output;
    end Create_Layer;
@@ -168,10 +206,14 @@ package body NN.Neuron is
 
    procedure Fire (Network : in out Hamming_Network;
                    Input   : in     Real_Matrix;
-                   Output  : out    Real_Matrix)
+                   Output  : out    Integer)
    is
-      Feedforward_Output : Real_Matrix(Output'First .. Output'Last,
+      Recurrent_Output   : Real_Matrix(Integer'First .. Integer'First + Network.Recurrent.Neuron_Count - 1,
                                        Integer'First .. Integer'First);
+      Feedforward_Output : Real_Matrix(Integer'First .. Integer'First + Network.Recurrent.Neuron_Count - 1,
+                                       Integer'First .. Integer'First);
+      Has_Converged      : Boolean;
+      Neuron_Fired       : Integer;
    begin
 
       -- Feedforward layer --
@@ -179,10 +221,13 @@ package body NN.Neuron is
 
       -- Recurrent layer --
       loop
-         Fire(Network.Recurrent, Feedforward_Output, Output);
-         Feedforward_Output := Output;
-         exit when Input = Feedforward_Output;
+         Fire(Network.Recurrent, Feedforward_Output, Recurrent_Output);
+         Identify_Convergence(Recurrent_Output, Has_Converged, Neuron_Fired);
+         exit when Has_Converged;
+         Feedforward_Output := Recurrent_Output;
       end loop;
+
+      Output := Neuron_Fired - Integer'First;
    end Fire;
 
 end NN.Neuron;
