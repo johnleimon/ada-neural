@@ -35,6 +35,7 @@ package NN.Math is
                                Actual_Output  : Real_Matrix) return Real_Matrix
                                with Pre =>
                                     Input_Weights'Length(1) = Input'Length(1) and
+                                    Learning_Read < 0.0 and
                                     Input_Weights'Length(2) = Input'Length(1);
 
 end NN.Math;
