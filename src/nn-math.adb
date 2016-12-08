@@ -63,4 +63,17 @@ package body NN.Math is
       return Input_Weights + Learning_Rate * (Desired_Output - Actual_Output) * Transpose(Input);
    end Widrow_Hoff_Delta;
 
+   -----------------------
+   -- Unsupervised_Hebb --
+   -----------------------
+
+   function Unsupervised_Hebb (Input_Weights  : Real_Matrix;
+                               Learning_Rate  : Float;
+                               Input          : Real_Matrix;
+                               Actual_Output  : Real_Matrix) return Real_Matrix
+   is
+   begin
+      return Input_Weights + Learning_Rate * Actual_Output * Transpose(Input);
+   end Unsupervised_Hebb;
+
 end NN.Math;
