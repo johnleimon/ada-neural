@@ -28,4 +28,13 @@ package NN.Math is
    function Create_Real_Matrix (Rows : Natural; 
                              Columns : Natural ) return Real_Matrix;
 
+   function Widrow_Hoff_Delta (Input_Weights  : Real_Matrix;
+                               Learning_Rate  : Float;
+                               Input          : Real_Matrix;
+                               Desired_Output : Real_Matrix;
+                               Actual_Output  : Real_Matrix) return Real_Matrix
+                               with Pre =>
+                                    Input_Weights'Length(1) = Input'Length(1) and
+                                    Input_Weights'Length(2) = Input'Length(1);
+
 end NN.Math;

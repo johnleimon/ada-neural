@@ -181,6 +181,11 @@ procedure Main is
       
       Register_Test_Result(Test_Name, Test_Result, Input, Output);
 
+      if DEBUG then
+         Put_Line("WEIGHTS");
+         Put(Weights);
+      end if;
+
    end Test_Fire_Neural_Layer;
 
    -------------------------------
