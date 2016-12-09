@@ -240,16 +240,4 @@ begin
    Test_Fire_Hamming_Network;
    Test_PseudoInverse;
 
-   declare
-      X : Real_Matrix := ( ( Integer'First =>  2.0 ),
-                           ( Integer'First => -1.0 ) );
-   begin
-
-      Put_Line("Norm of ");
-      Put(X);
-      Put_Line(" is: ");
-      Put(Float'Image(Eucledian_Norm(X)));
-
-   end;
-
 end Main;
