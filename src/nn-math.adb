@@ -20,7 +20,8 @@
 -- OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF      --
 -- THIS SOFTWARE.                                              --
 -----------------------------------------------------------------
-with Ada.Numerics.Real_Arrays; use Ada.Numerics.Real_Arrays;
+with Ada.Numerics.Real_Arrays;          use Ada.Numerics.Real_Arrays;
+with Ada.Numerics.Elementary_Functions; use Ada.Numerics.Elementary_Functions;
 
 package body NN.Math is
 
@@ -75,5 +76,21 @@ package body NN.Math is
    begin
       return Input_Weights + Learning_Rate * Actual_Output * Transpose(Input);
    end Unsupervised_Hebb;
+
+   --------------------
+   -- Eucledian_Norm --
+   --------------------
+
+   function Eucledian_Norm (Input : Real_Matrix) return Float
+   is
+      Sum : Float := 0.0;
+   begin
+      for I in Input'Range(1) loop
+         for J in Input'Range(2) loop
+            Sum := Sum + Input(I, J)**2;
+         end loop;
+      end loop;
+      return Sqrt(Sum);
+   end Eucledian_Norm;
 
 end NN.Math;

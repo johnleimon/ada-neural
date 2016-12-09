@@ -47,5 +47,6 @@ package NN.Math is
                                     Learning_Rate < 0.0 and
                                     Input_Weights'Length(2) = Input'Length(1);
 
+   function Eucledian_Norm (Input : Real_Matrix) return Float;
 
 end NN.Math;
