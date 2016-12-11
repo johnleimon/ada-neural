@@ -93,4 +93,21 @@ package body NN.Math is
       return Sqrt(Sum);
    end Eucledian_Norm;
 
+   -----------------------
+   -- Positive_Definite --
+   -----------------------
+
+   function Positive_Definite (Input : Real_Matrix) return Boolean
+   is
+      Input_Eigenvalues : Real_Vector := Eigenvalues(Input);
+   begin
+      for I in Input_Eigenvalues'Range(1) loop
+         if Input_Eigenvalues(I) <= 0.0 then
+            return False;
+         end if;
+      end loop;
+
+      return True;
+   end Positive_Definite;
+
 end NN.Math;

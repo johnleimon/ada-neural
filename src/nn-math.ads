@@ -49,4 +49,6 @@ package NN.Math is
 
    function Eucledian_Norm (Input : Real_Matrix) return Float;
 
+   function Positive_Definite (Input : Real_Matrix) return Boolean;
+
 end NN.Math;
