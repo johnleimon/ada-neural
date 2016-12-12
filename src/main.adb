@@ -31,13 +31,11 @@ with NN.Transfer;              use NN.Transfer;
 
 procedure Main is
 
-   type Fixed is delta 0.01 range -100.0..100.0;
-
    DEFAULT : constant String := Character'Val(16#1B#) & "[39m";
    GREEN   : constant String := Character'Val(16#1B#) & "[92m";
    RED     : constant String := Character'Val(16#1B#) & "[31m";
 
-   DEBUG   : constant Boolean := True; -- Prints full debug info --
+   DEBUG   : constant Boolean := False; -- Prints full debug info --
 
    --------------------------
    -- Register_Test_Result --
