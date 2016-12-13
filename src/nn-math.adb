@@ -110,4 +110,24 @@ package body NN.Math is
       return True;
    end Positive_Definite;
 
+    --------------
+    -- Gradient --
+    --------------
+
+   function Gradient (Input : Real_Matrix;
+                      Point : Real_Matrix) return Real_Matrix
+   is
+      Output : Real_Matrix(Point'Range(1), Point'Range(2));
+   begin
+      Output := (Output'Range(1) => (Output'Range(2) => 0.0));
+
+      for I in Input'Range(1) loop
+         for J in Input'Range(2) loop
+            Output(I, Integer'First) := Output(I, Integer'First) + Input(I, J) * Point(J, Integer'First);
+         end loop;
+      end loop;
+
+      return Output;
+   end Gradient;
+
 end NN.Math;

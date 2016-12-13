@@ -60,7 +60,6 @@ procedure Main is
       end if;
    end Register_Test_Result;
    
-   
    ----------------------------
    --    Test_Create_Layer   --
    ----------------------------
@@ -231,11 +230,44 @@ procedure Main is
 
    end Test_Fire_Hamming_Network;
 
+   -------------------
+   -- Test_Gradient --
+   -------------------
+
+   procedure Test_Gradient
+   is
+      Input : Real_Matrix := ( ( 2.0, 1.0 ),
+                               ( 1.0, 2.0 ) );
+      Point : Real_Matrix := ( ( Integer'First =>  0.8 ),
+                               ( Integer'First => -0.25 ) );
+   begin
+      declare
+         Output : Real_Matrix := Gradient(Input, Point);
+      begin
+
+         if Output(Integer'First, Integer'First) = 1.35 and
+            Output(Integer'First + 1, Integer'First) = 0.3
+         then
+            Register_Test_Result("Test_Gradient",
+                                 True,
+                                 Input,
+                                 Output);
+         else
+            Register_Test_Result("Test_Gradient",
+                                 False,
+                                 Input,
+                                 Output);
+         end if;
+
+      end;
+   end Test_Gradient;
+
 begin
       
    Test_Create_Layer;
    Test_Fire_Neural_Layer;
    Test_Fire_Hamming_Network;
    Test_PseudoInverse;
+   Test_Gradient;
 
 end Main;

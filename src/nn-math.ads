@@ -51,4 +51,10 @@ package NN.Math is
 
    function Positive_Definite (Input : Real_Matrix) return Boolean;
 
+   function Gradient (Input : Real_Matrix;
+                      Point : Real_Matrix) return Real_Matrix
+                      with Pre =>
+                           Input'Length(1) = Input'Length(2) and
+                           Input'Length(1) = Point'Length(2);
+
 end NN.Math;
