@@ -71,7 +71,7 @@ package body NN.Neuron is
                           Number_Of_Inputs  : Natural;
                           Transfer          : Transfer_Function;
                           Input_Weights     : Real_Matrix_Access;
-                          Bias              : Float := 0.0) return Neural_Layer
+                          Bias              : Long_Long_Float := 0.0) return Neural_Layer
    is
       Bias_Array     : Float_Array_Access             := new Float_Array(Integer'First .. Integer'First + Number_Of_Neurons - 1);
       Transfer_Array : Transfer_Function_Array_Access := new Transfer_Function_Array(Integer'First .. Integer'First + Number_Of_Neurons - 1);
@@ -108,7 +108,7 @@ package body NN.Neuron is
    function Create_Hamming_Network (Number_Of_Neurons : Natural;
                                     Number_Of_Inputs  : Natural;
                                     Prototypes        : Real_Matrix_Access;
-                                    Bias              : Float) return Hamming_Network
+                                    Bias              : Long_Long_Float) return Hamming_Network
    is
       ε                       : constant := 0.5;
       Output                  : Hamming_Network;
@@ -166,8 +166,8 @@ package body NN.Neuron is
                    Input  : in  Real_Matrix;
                    Output : out Real_Matrix)
    is
-      Weight             : Float;
-      Sum                : Float; 
+      Weight             : Long_Long_Float;
+      Sum                : Long_Long_Float;
    begin
 
       for Neuron_Index in Layer.Weights'Range(1) loop

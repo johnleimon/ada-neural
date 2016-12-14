@@ -20,12 +20,14 @@
 -- OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF      --
 -- THIS SOFTWARE.                                              --
 -----------------------------------------------------------------
-with Ada.Numerics.Real_Arrays; use Ada.Numerics.Real_Arrays;
-with Ada.Text_IO;              use Ada.Text_IO;
+with Ada.Text_IO; use Ada.Text_IO;
+with NN.Math;
 
 package NN.IO is
 
-   package Float_Text_IO is new Float_IO(Float);
+   use NN.Math.Super_Matrixes;
+
+   package Float_Text_IO is new Float_IO(Long_Long_Float);
 
    DEFAULT : constant String := Character'Val(16#1B#) & "[39m";
    GREEN   : constant String := Character'Val(16#1B#) & "[92m";
@@ -33,6 +35,6 @@ package NN.IO is
 
    procedure Put (Matrix : Real_Matrix);
 
-   procedure Put_Float (Input : Float);
+   procedure Put_Float (Input : Long_Long_Float);
 
 end NN.IO;

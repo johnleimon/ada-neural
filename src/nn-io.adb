@@ -20,10 +20,12 @@
 -- OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF      --
 -- THIS SOFTWARE.                                              --
 -----------------------------------------------------------------
-with Ada.Numerics.Real_Arrays; use Ada.Numerics.Real_Arrays;
-with Ada.Text_IO;              use Ada.Text_IO;
+with Ada.Text_IO; use Ada.Text_IO;
+with NN.Math;
 
 package body NN.IO is
+
+   use NN.Math.Super_Matrixes;
 
    ---------
    -- Put --
@@ -37,7 +39,7 @@ package body NN.IO is
             Put("   ");
             Float_Text_IO.Put(Item => Matrix(I, J),
                               Fore =>  3,
-                              Aft  => 12,
+                              Aft  => 24,
                               Exp  =>  0);
          end loop;
       New_Line;
@@ -48,12 +50,12 @@ package body NN.IO is
    -- Put_Float --
    --------------
 
-   procedure Put_Float (Input : Float)
+   procedure Put_Float (Input : Long_Long_Float)
    is
    begin
       Float_Text_IO.Put(Item => Input,
                         Fore =>  3,
-                        Aft  => 12,
+                        Aft  => 24,
                         Exp  =>  0);
    end Put_Float;
 

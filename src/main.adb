@@ -20,16 +20,16 @@
 -- OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF      --
 -- THIS SOFTWARE.                                              --
 -----------------------------------------------------------------
-with Ada.Numerics.Real_Arrays; use Ada.Numerics.Real_Arrays;
-with Ada.Text_IO;              use Ada.Text_IO;
-with NN;                       use NN;
-with NN.IO;                    use NN.IO;
-with NN.Math;                  use NN.Math;
-with NN.Neuron;                use NN.Neuron;
-with NN.Transfer;              use NN.Transfer;
-
+with Ada.Text_IO; use Ada.Text_IO;
+with NN;          use NN;
+with NN.IO;       use NN.IO;
+with NN.Math;     use NN.Math;
+with NN.Neuron;   use NN.Neuron;
+with NN.Transfer; use NN.Transfer;
 
 procedure Main is
+
+   use NN.Math.Super_Matrixes;
 
    DEFAULT : constant String := Character'Val(16#1B#) & "[39m";
    GREEN   : constant String := Character'Val(16#1B#) & "[92m";
@@ -70,7 +70,7 @@ procedure Main is
       Number_Of_Inputs  : Natural             := 3;
       Transfer          : Transfer_Function   := satlin'access;
       Input_Weights     : aliased Real_Matrix := Create_Real_Matrix(Number_Of_Neurons, Number_Of_Inputs);
-      Bias              : Float               := 0.0;
+      Bias              : Long_Long_Float     := 0.0;
       Input             : Real_Matrix         := Create_Real_Matrix(Number_Of_Inputs, 1);
       Output            : Real_Matrix         := Create_Real_Matrix(Number_Of_Neurons, 1);  
       Test_Name         : String              := "Test_Create_Layer";
@@ -238,7 +238,7 @@ procedure Main is
    is
       Input : Real_Matrix := ( ( 2.0, 1.0 ),
                                ( 1.0, 2.0 ) );
-      Point : Real_Matrix := ( ( Integer'First =>  0.8 ),
+      Point : Real_Matrix := ( ( Integer'First =>  0.8  ),
                                ( Integer'First => -0.25 ) );
    begin
       declare
@@ -262,6 +262,38 @@ procedure Main is
       end;
    end Test_Gradient;
 
+   -----------------------------
+   -- Test_Conjugate_Gradient --
+   -----------------------------
+
+   procedure Test_Conjugate_Gradient
+   is
+      Input : Real_Matrix := ( ( 2.0, 1.0 ),
+                               ( 1.0, 2.0 ) );
+      Point : Real_Matrix := ( ( Integer'First => 20.0  ),
+                               ( Integer'First => -1.25 ) );
+   begin
+      declare
+         Output : Real_Matrix := Conjugate_Gradient(Input, Point);
+      begin
+
+         if Output(Integer'First, Integer'First) = 0.0 and
+            Output(Integer'First + 1, Integer'First) = 0.0
+         then
+            Register_Test_Result("Test_Conjugate_Gradient",
+                                 True,
+                                 Input,
+                                 Output);
+         else
+            Register_Test_Result("Test_Conjugate_Gradient",
+                                 False,
+                                 Input,
+                                 Output);
+         end if;
+
+      end;
+   end Test_Conjugate_Gradient;
+
 begin
       
    Test_Create_Layer;
@@ -269,5 +301,6 @@ begin
    Test_Fire_Hamming_Network;
    Test_PseudoInverse;
    Test_Gradient;
+   Test_Conjugate_Gradient;
 
 end Main;

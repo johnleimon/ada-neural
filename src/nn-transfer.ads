@@ -20,28 +20,31 @@
 -- OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF      --
 -- THIS SOFTWARE.                                              --
 -----------------------------------------------------------------
+with NN.Math;
 
 package NN.Transfer is
 
-   function Hard_Limit (input : Float) return Float;
-   function hardlim (input : Float) return Float renames Hard_Limit;
-   
-   function Symmetrical_Hard_Limit (input : Float) return Float;
-   function hardlims (input : Float) return Float renames Symmetrical_Hard_Limit;
-   
-   function Linear (input : Float) return Float;
-   function purelin (input : Float) return Float renames Linear;
-   
-   function Positive_Linear (input : Float) return Float;
-   function poslin (input : Float) return Float renames Positive_Linear;
+   use NN.Math.Super_Matrixes;
 
-   function Saturating_Linear (input : Float) return Float;
-   function satlin (input : Float) return Float renames Saturating_Linear;
+   function Hard_Limit (input : Long_Long_Float) return Long_Long_Float;
+   function hardlim (input : Long_Long_Float) return Long_Long_Float renames Hard_Limit;
+   
+   function Symmetrical_Hard_Limit (input : Long_Long_Float) return Long_Long_Float;
+   function hardlims (input : Long_Long_Float) return Long_Long_Float renames Symmetrical_Hard_Limit;
+   
+   function Linear (input : Long_Long_Float) return Long_Long_Float;
+   function purelin (input : Long_Long_Float) return Long_Long_Float renames Linear;
+   
+   function Positive_Linear (input : Long_Long_Float) return Long_Long_Float;
+   function poslin (input : Long_Long_Float) return Long_Long_Float renames Positive_Linear;
 
-   function Log_Sigmoid (input : float) return Float;
-   function logsig (input : float) return Float renames Log_Sigmoid;
+   function Saturating_Linear (input : Long_Long_Float) return Long_Long_Float;
+   function satlin (input : Long_Long_Float) return Long_Long_Float renames Saturating_Linear;
 
-   function Hyperbolic_Tangent_Sigmoid (input : Float) return Float;
-   function tansig (input : Float) return Float renames Hyperbolic_Tangent_Sigmoid;
+   function Log_Sigmoid (input : Long_Long_Float) return Long_Long_Float;
+   function logsig (input : Long_Long_Float) return Long_Long_Float renames Log_Sigmoid;
+
+   function Hyperbolic_Tangent_Sigmoid (input : Long_Long_Float) return Long_Long_Float;
+   function tansig (input : Long_Long_Float) return Long_Long_Float renames Hyperbolic_Tangent_Sigmoid;
 
 end NN.Transfer;

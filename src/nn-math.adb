@@ -20,10 +20,15 @@
 -- OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF      --
 -- THIS SOFTWARE.                                              --
 -----------------------------------------------------------------
-with Ada.Numerics.Real_Arrays;          use Ada.Numerics.Real_Arrays;
-with Ada.Numerics.Elementary_Functions; use Ada.Numerics.Elementary_Functions;
+with Ada.Numerics.Generic_Elementary_Functions;
+
+with nn.io; use nn.io;
+with ada.text_io; use ada.text_io;
 
 package body NN.Math is
+
+   package Math_Functions is new Ada.Numerics.Generic_Elementary_Functions(Long_Long_Float);
+   use Math_Functions;
 
    -------------------
    -- PseudoInverse --
@@ -55,7 +60,7 @@ package body NN.Math is
    -----------------------
 
    function Widrow_Hoff_Delta (Input_Weights  : Real_Matrix;
-                               Learning_Rate  : Float;
+                               Learning_Rate  : Long_Long_Float;
                                Input          : Real_Matrix;
                                Desired_Output : Real_Matrix;
                                Actual_Output  : Real_Matrix) return Real_Matrix
@@ -69,7 +74,7 @@ package body NN.Math is
    -----------------------
 
    function Unsupervised_Hebb (Input_Weights  : Real_Matrix;
-                               Learning_Rate  : Float;
+                               Learning_Rate  : Long_Long_Float;
                                Input          : Real_Matrix;
                                Actual_Output  : Real_Matrix) return Real_Matrix
    is
@@ -81,9 +86,9 @@ package body NN.Math is
    -- Eucledian_Norm --
    --------------------
 
-   function Eucledian_Norm (Input : Real_Matrix) return Float
+   function Eucledian_Norm (Input : Real_Matrix) return Long_Long_Float
    is
-      Sum : Float := 0.0;
+      Sum : Long_Long_Float := 0.0;
    begin
       for I in Input'Range(1) loop
          for J in Input'Range(2) loop
@@ -110,6 +115,21 @@ package body NN.Math is
       return True;
    end Positive_Definite;
 
+   ---------------
+   -- Symmetric --
+   ---------------
+
+   function Symmetric (Input : Real_Matrix) return Boolean
+   is
+   begin
+      if Input = Transpose(Input)
+      then
+         return true;
+      else
+         return false;
+      end if;
+   end Symmetric;
+
     --------------
     -- Gradient --
     --------------
@@ -129,5 +149,82 @@ package body NN.Math is
 
       return Output;
    end Gradient;
+   
+   ------------------------
+   -- Conjugate_Gradient --
+   ------------------------
+   
+   function Conjugate_Gradient (Input              : Real_Matrix;
+                                Initial_Guess      : Real_Matrix;
+                                Convergence_Window : Long_Long_Float := 0.00000001) return Real_Matrix
+   is
+      x      : Real_Matrix :=  Initial_Guess;
+      Output : Real_Matrix(Initial_Guess'Range(1), Initial_Guess'Range(2)) := (others => (others => 0.0));
+      g1     : Real_Matrix(Initial_Guess'Range(1), Initial_Guess'Range(2)) := (others => (others => 0.0));
+      p1     : Real_Matrix(Initial_Guess'Range(1), Initial_Guess'Range(2)) := (others => (others => 0.0));
+      Last   : Real_Matrix(Initial_Guess'Range(1), Initial_Guess'Range(2)) := (others => (others => 0.0));
+   begin
+
+      if not Symmetric(Input) then
+         raise Matrix_Not_Symmetric;
+      end if;
+
+      if not Positive_Definite(Input) then
+         raise Matrix_Not_Positive_Definite;
+      end if;
+
+<< Perform_Iteration >>
+
+         -- Calculate the learning rate of the first iteration --
+         declare
+            g0 : Real_Matrix :=  Gradient(Input, Initial_Guess);
+            p0 : Real_Matrix := -Gradient(Input, Initial_Guess);
+            α  : Real_Matrix := (Transpose(-p0) * p0) / (Transpose(p0) * Input * p0); -- [9.68] --
+         begin
+            -- Compute first step of conjugate gradient --
+            x := x + abs(α(α'First(1), α'First(2))) * p0;                            -- [9.69] --
+   
+            -- Compute gradient at x1 --
+            g1 := Gradient(Input, x);                                                -- [9.70] --
+   
+            declare
+               β : Real_Matrix := (Transpose(g1) * g1) / (Transpose(g0) * g0);       -- [9.71] --
+            begin
+               -- Compute second search direction --
+               p1 := -g1 + β(β'First(1), β'First(2)) * p0;                           -- [9.72] --
+   
+               -- Compute learning rate of next iteration --
+               α := (Transpose(-g1) * p1) / (Transpose(p1) * Input * p1);            -- [9.73] --
+   
+               -- Compute next step of conjugate gradient --
+               x := x + α(α'First(1), α'First(2)) * p1;                              -- [9.74] --
+            end;
+         end;
+
+       -- Determine if our solution is inside the convergence window --
+       for I in last'Range(1) loop
+          for J in last'Range(2) loop
+            if abs(Last(I, J) - x(I, J)) > Convergence_Window then
+               -- Not inside the window --
+               Last := x;
+               goto Perform_Iteration;
+            end if;
+          end loop;
+       end loop;
+
+      return x;
+
+   end Conjugate_Gradient;
+   
+   ------------------------------------
+   -- Real_Matrix Division Operation --
+   ------------------------------------
+   
+   function "/" (Left  : Real_Matrix;
+                 Right : Real_Matrix) return Real_Matrix
+   is
+   begin
+      return Left * Inverse(Right);
+   end "/";
 
 end NN.Math;

@@ -21,12 +21,14 @@
 -- THIS SOFTWARE.                                              --
 -----------------------------------------------------------------
 with Ada.Containers.Indefinite_Vectors; use Ada.Containers;
-with Ada.Numerics.Real_Arrays;          use Ada.Numerics.Real_Arrays;
 with Ada.Unchecked_Deallocation;
+with NN.Math;
 
 package NN.Neuron is
 
-   type Float_Array is array (Integer range <>) of Float;
+   use NN.Math.Super_Matrixes;
+
+   type Float_Array is array (Integer range <>) of Long_Long_Float;
    type Transfer_Function_Array is array (Integer range <>) of Transfer_Function;
 
    type Float_Array_Access is access all Float_Array;
@@ -55,7 +57,7 @@ package NN.Neuron is
                           Number_Of_Inputs  : Natural;
                           Transfer          : Transfer_Function;
                           Input_Weights     : Real_Matrix_Access;
-                          Bias              : Float := 0.0) return Neural_Layer
+                          Bias              : Long_Long_Float := 0.0) return Neural_Layer
                           with Pre => Number_Of_Neurons > 0 and
                                       Number_Of_Inputs > 0;
 
@@ -64,7 +66,7 @@ package NN.Neuron is
    function Create_Hamming_Network (Number_Of_Neurons : Natural;
                                     Number_Of_Inputs  : Natural;
                                     Prototypes        : Real_Matrix_Access;
-                                    Bias              : Float) return Hamming_Network;
+                                    Bias              : Long_Long_Float) return Hamming_Network;
 
    procedure Delete_Hamming_Network (Network : in out Hamming_Network);
 

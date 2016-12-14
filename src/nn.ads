@@ -20,6 +20,7 @@
 -- OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF      --
 -- THIS SOFTWARE.                                              --
 -----------------------------------------------------------------
+
 package NN is
-   type Transfer_Function is access function (input : Float) return Float;
+   type Transfer_Function is access function (Input : Long_Long_Float) return Long_Long_Float;
 end NN;
