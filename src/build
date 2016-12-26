@@ -2,4 +2,4 @@
 
 set -x
 
-gnatmake -g -gnatW8 main.adb
+gnatmake -g -gnatW8 -gnata main.adb

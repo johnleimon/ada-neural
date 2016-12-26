@@ -43,7 +43,6 @@ package NN.Neuron is
       Bias               : Float_Array_Access;
       Weights            : Real_Matrix_Access;
       Transfer_Functions : Transfer_Function_Array_Access;
-      Neuron_Count       : Integer;
    end record;
 
    type Neural_Network is array (Natural range <>) of Neural_Layer;
@@ -53,6 +52,9 @@ package NN.Neuron is
       Recurrent   : Neural_Layer;
    end record;
 
+   function Generate_Weight return Long_Long_Float;
+   function Generate_Bias return Long_Long_Float renames Generate_Weight;
+
    function Create_Layer (Number_Of_Neurons : Natural;
                           Number_Of_Inputs  : Natural;
                           Transfer          : Transfer_Function;
@@ -60,6 +62,16 @@ package NN.Neuron is
                           Bias              : Long_Long_Float := 0.0) return Neural_Layer
                           with Pre => Number_Of_Neurons > 0 and
                                       Number_Of_Inputs > 0;
+
+     -- TODO TODO TODO TODO TODO --
+--   function Create_Layer_Random (Number_Of_Neurons : Natural;
+--                                 Number_Of_Inputs  : Natural;
+--                                 Transfer          : Transfer_Function;
+--                                 Input_Weights     : Real_Matrix_Access) return Neural_Layer
+--                                 with Pre => Number_Of_Neurons > 0 and
+--                                             Number_Of_Inputs > 0;
+--   -- Creates a layer with neurons that have biases and weights --
+--   -- with random numbers between 0.0 and 0.99999               --
 
    procedure Delete_Layer (Layer : in out Neural_Layer);
 
@@ -70,20 +82,13 @@ package NN.Neuron is
 
    procedure Delete_Hamming_Network (Network : in out Hamming_Network);
 
-   procedure Fire (Layer  : in  Neural_Layer;
-                   Input  : in  Real_Matrix;
-                   Output : out Real_Matrix)
-                   with Pre => 
-                        Output'Length = Layer.Weights'Length(2);
+   function Fire (Layer  : Neural_Layer;
+                  Input  : Real_Matrix) return Real_Matrix;
 
-   procedure Fire (Network : in  Neural_Network;
-                   Input   : in  Real_Matrix;
-                   Output  : out Real_Matrix)
-                   with Pre => 
-                        Output'Length = Network(Network'First).Weights'Length(2);
+   function Fire (Network : Neural_Network;
+                  Input   : Real_Matrix) return Real_Matrix;
 
-   procedure Fire (Network : in  out Hamming_Network;
-                   Input   : in      Real_Matrix;
-                   Output  : out     Real_Matrix);
+   function Fire (Network : Hamming_Network;
+                  Input   : Real_Matrix) return Real_Matrix;
 
 end NN.Neuron;

@@ -63,7 +63,7 @@ package NN.Math is
                       Point : Real_Matrix) return Real_Matrix
                       with Pre =>
                            Input'Length(1) = Input'Length(2) and
-                           Input'Length(1) = Point'Length(2);
+                           Input'Length(1) = Point'Length(1);
 
    function Conjugate_Gradient (Input              : Real_Matrix;
                                 Initial_Guess      : Real_Matrix;

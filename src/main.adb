@@ -72,7 +72,6 @@ procedure Main is
       Input_Weights     : aliased Real_Matrix := Create_Real_Matrix(Number_Of_Neurons, Number_Of_Inputs);
       Bias              : Long_Long_Float     := 0.0;
       Input             : Real_Matrix         := Create_Real_Matrix(Number_Of_Inputs, 1);
-      Output            : Real_Matrix         := Create_Real_Matrix(Number_Of_Neurons, 1);  
       Test_Name         : String              := "Test_Create_Layer";
       Test_Result       : Boolean             := False;                           
       Test_Layer        : Neural_Layer;
@@ -98,16 +97,18 @@ procedure Main is
                                  Bias              => Bias);
                                   
       -- Fire neuron layer --
-      Fire(Test_Layer,Input,Output);
+      declare
+         Output : Real_Matrix := Fire(Test_Layer, Input);
+      begin
+         -- Evaluate output --
+         if Output(Output'First,     Output'First) = 0.75 and
+            Output(Output'First + 1, Output'First) = 0.75
+         then
+            Test_Result := True;
+         end if;
       
-      -- Evaluate output --
-      if Output(Output'First,     Output'First) = 0.75 and
-         Output(Output'First + 1, Output'First) = 0.75
-      then
-         Test_Result := True;
-      end if;
-      
-      Register_Test_Result(Test_Name, Test_Result, Input, Output);
+         Register_Test_Result(Test_Name, Test_Result, Input, Output);
+      end;
       
    end Test_Create_Layer;
 
@@ -142,7 +143,6 @@ procedure Main is
 
    procedure Test_Fire_Neural_Layer
    is
-
       Bias        : aliased Float_Array :=  ( 0.1, -0.06 );
       -- Two Neurons, Three Weights --
       Weights     : aliased Real_Matrix := ( ( 0.5, 0.5, 0.5 ),
@@ -150,16 +150,28 @@ procedure Main is
       Input       : Real_Matrix         := ( ( Integer'First => 0.1 ),
                                              ( Integer'First => 0.2 ),
                                              ( Integer'First => 0.3 ) );
-      Output      : Real_Matrix         := ( ( Integer'First => 0.0 ),
-                                             ( Integer'First => 0.0 ),
-                                             ( Integer'First => 0.0 ) );
-      Transfer    : aliased Transfer_Function_Array := (satlin'access,
-                                                        satlin'access,
-                                                        satlin'access);
+      Transfer    : aliased Transfer_Function_Array := ( satlin'access,
+                                                         satlin'access );
       Layer       : Neural_Layer;
       Test_Name   : String              := "Fire Neural Network Layer";
       Test_Result : Boolean             := False;
    begin
+
+      --   Number of Inputs:  3                    --
+      --   Number of Neurons: 2                    --
+      --                                           --
+      --   INPUTS    WEIGHTS   NEURON    OUTPUT    --
+      --                        BIAS               --
+      --                                           --
+      --    0.1        0.5                         --
+      --               0.7                         --
+      --                        0.1       0.4      --
+      --    0.2        0.5                         --
+      --               0.1                         --
+      --                       -0.06      0.3      --
+      --    0.3        0.5                         --
+      --               0.9                         --
+      --                                           --
 
       -- Setup neuron layer --
       Layer.Bias               := Bias'Unchecked_access;
@@ -167,16 +179,18 @@ procedure Main is
       Layer.Transfer_Functions := Transfer'Unchecked_access;
 
       -- Fire neuron layer --
-      Fire(Layer, Input, Output);
-
-      -- Evaluate output --
-      if Output(Output'First, Output'First)     = 0.4 and
-         Output(Output'First + 1, Output'First) = 0.3
-      then
-         Test_Result := True;
-      end if;
+      declare
+         Output : Real_Matrix := Fire(Layer, Input);
+      begin
+         -- Evaluate output --
+         if Output(Output'First, Output'First)     = 0.4 and
+            Output(Output'First + 1, Output'First) = 0.3
+         then
+            Test_Result := True;
+         end if;
       
-      Register_Test_Result(Test_Name, Test_Result, Input, Output);
+         Register_Test_Result(Test_Name, Test_Result, Input, Output);
+      end;
 
       if DEBUG then
          Put_Line("WEIGHTS");
@@ -204,8 +218,6 @@ procedure Main is
       Input       : Real_Matrix         := ( ( Integer'First => -1.0 ),
                                              ( Integer'First => -1.0 ),
                                              ( Integer'First => -1.0 ) );
-      Output      : Real_Matrix         := ( ( Integer'First =>  0.0 ),
-                                             ( Integer'First =>  0.0 ) );
       Network     : Hamming_Network;
       Test_Name   : String              := "Fire Hamming Network";
       Test_Result : Boolean             := False;
@@ -218,15 +230,17 @@ procedure Main is
                                         Bias              => 3.0);
                                  
       -- Fire Hamming Network layers --
-      Fire(Network, Input, Output);
+      declare
+         Output : Real_Matrix := Fire(Network, Input);
+      begin
+         if Output(Integer'First + 0, Integer'First) > 0.0 and
+            Output(Integer'First + 1, Integer'First) = 0.0
+         then
+            Test_Result := True;
+         end if;
 
-      if Output(Integer'First + 0, Integer'First) > 0.0 and
-         Output(Integer'First + 1, Integer'First) = 0.0
-      then
-         Test_Result := True;
-      end if;
-
-      Register_Test_Result(Test_Name, Test_Result, Input, Output);
+         Register_Test_Result(Test_Name, Test_Result, Input, Output);
+      end;
 
    end Test_Fire_Hamming_Network;
 
@@ -241,6 +255,7 @@ procedure Main is
       Point : Real_Matrix := ( ( Integer'First =>  0.8  ),
                                ( Integer'First => -0.25 ) );
    begin
+
       declare
          Output : Real_Matrix := Gradient(Input, Point);
       begin
@@ -295,7 +310,7 @@ procedure Main is
    end Test_Conjugate_Gradient;
 
 begin
-      
+
    Test_Create_Layer;
    Test_Fire_Neural_Layer;
    Test_Fire_Hamming_Network;

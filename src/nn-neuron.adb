@@ -20,11 +20,30 @@
 -- OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF      --
 -- THIS SOFTWARE.                                              --
 -----------------------------------------------------------------
-with Ada.Text_IO; use Ada.Text_IO;
-with NN.Transfer; use NN.Transfer;
-with NN.IO;       use NN.IO;
+with Ada.Numerics.Discrete_Random;
+with Ada.Text_IO;                  use Ada.Text_IO;
+with NN.Transfer;                  use NN.Transfer;
+with NN.IO;                        use NN.IO;
 
 package body NN.Neuron is
+
+   Weight_And_Bias_Floor   : constant :=      0;
+   Weight_And_Bias_Ceiling : constant :=  99999;
+
+   type Weight_And_Bias_Range is range Weight_And_Bias_Floor .. Weight_And_Bias_Ceiling;
+
+   package Random is new Ada.Numerics.Discrete_Random (Weight_And_Bias_Range);
+
+   ---------------------
+   -- Generate_Weight --
+   ---------------------
+
+   function Generate_Weight return Long_Long_Float is
+      Seed : Random.Generator;
+   begin
+      Random.Reset(Seed);
+      return Long_Long_Float(Random.Random(Seed)) / Long_Long_Float(Weight_And_Bias_Ceiling);
+   end Generate_Weight;
 
    --------------------------
    -- Identify_Convergence --
@@ -84,7 +103,6 @@ package body NN.Neuron is
       Output.Bias               := Bias_Array;
       Output.Weights            := Input_Weights;
       Output.Transfer_Functions := Transfer_Array;
-      Output.Neuron_Count       := Number_Of_Neurons;
 
       return Output;
    end Create_Layer;
@@ -162,15 +180,16 @@ package body NN.Neuron is
    -- Fire --
    ----------
 
-   procedure Fire (Layer  : in  Neural_Layer;
-                   Input  : in  Real_Matrix;
-                   Output : out Real_Matrix)
+   function Fire (Layer  : in  Neural_Layer;
+                  Input  : in  Real_Matrix) return Real_Matrix
    is
       Weight             : Long_Long_Float;
       Sum                : Long_Long_Float;
+      Output             : Real_Matrix (Integer'First .. Integer'First + Layer.Transfer_Functions'Length - 1,
+                                        Integer'First .. Integer'First);
    begin
 
-      for Neuron_Index in Layer.Weights'Range(1) loop
+      for Neuron_Index in Integer'First .. Integer'First + Layer.Transfer_Functions'Length - 1 loop
          Sum := 0.0;
          
          for Input_Index in Layer.Weights'Range(2) loop
@@ -181,53 +200,70 @@ package body NN.Neuron is
          Sum                                 := Sum + Layer.Bias(Neuron_Index); 
          Output(Neuron_Index, Integer'First) := Layer.Transfer_Functions(Neuron_Index)(Sum);
       end loop;
+
+      return Output;
+
    end Fire;
 
-   ----------
-   -- Fire --
-   ----------
+   --------------------
+   -- Recursive_Fire --
+   --------------------
 
-   procedure Fire (Network : in  Neural_Network;
-                   Input   : in  Real_Matrix;
-                   Output  : out Real_Matrix)
+   function Recursive_Fire (Network : Neural_Network;
+                            Input   : Real_Matrix;
+                            Layer   : Integer) return Real_Matrix
    is
-      Next_Input : Real_Matrix(1 .. 1, Input'First .. Input'Last);
    begin
-      Next_Input := Input;
-      for Layer in Network'Range loop
-         Fire(Network(Layer), Next_Input, Output);
-         Next_Input := Output;
-      end loop;
-   end Fire;
+      if Layer = Network'Last + 1 then
+         return Input;
+      end if;
+
+      return Recursive_Fire(Network, Fire(Network(Layer), Input), Layer + 1);
+   end Recursive_Fire;
 
    ----------
    -- Fire --
    ----------
 
-   procedure Fire (Network : in out Hamming_Network;
-                   Input   : in     Real_Matrix;
-                   Output  : out    Real_Matrix)
+   function Fire (Network : in  Neural_Network;
+                  Input   : in  Real_Matrix) return Real_Matrix
    is
-      Recurrent_Output   : Real_Matrix(Integer'First .. Integer'First + Network.Recurrent.Neuron_Count - 1,
-                                       Integer'First .. Integer'First);
-      Feedforward_Output : Real_Matrix(Integer'First .. Integer'First + Network.Recurrent.Neuron_Count - 1,
-                                       Integer'First .. Integer'First);
+   begin
+      return Recursive_Fire(Network, Input, Network'First);
+   end Fire;
+
+   ----------------------------
+   -- Recursive_Hamming_Fire --
+   ----------------------------
+
+   function Recursive_Hamming_Fire (Network : Neural_Layer;
+                                    Input   : Real_Matrix) return Real_Matrix
+   is
       Has_Converged      : Boolean;
       Neuron_Fired       : Integer;
    begin
+      Identify_Convergence(Input, Has_Converged, Neuron_Fired);
 
-      -- Feedforward layer --
-      Fire(Network.Feedforward, Input, Feedforward_Output);
+      if Has_Converged then
+         return Input;
+      else
+         return Recursive_Hamming_Fire(Network, Fire(Network, Input));
+      end if;
+   end Recursive_Hamming_Fire;
 
-      -- Recurrent layer --
-      loop
-         Fire(Network.Recurrent, Feedforward_Output, Recurrent_Output);
-         Identify_Convergence(Recurrent_Output, Has_Converged, Neuron_Fired);
-         exit when Has_Converged;
-         Feedforward_Output := Recurrent_Output;
-      end loop;
+   ----------
+   -- Fire --
+   ----------
 
-      Output := Recurrent_Output;
+   function Fire (Network : Hamming_Network;
+                  Input   : Real_Matrix) return Real_Matrix
+   is
+   begin
+      declare
+         Feedforward_Output : Real_Matrix := Fire(Network.Feedforward, Input);
+      begin
+         return Recursive_Hamming_Fire(Network.Recurrent, Feedforward_Output);
+      end;
    end Fire;
 
 end NN.Neuron;
