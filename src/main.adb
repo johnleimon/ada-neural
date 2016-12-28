@@ -292,8 +292,8 @@ procedure Main is
          Output : Real_Matrix := Conjugate_Gradient(Input, Point);
       begin
 
-         if Output(Integer'First, Integer'First) = 0.0 and
-            Output(Integer'First + 1, Integer'First) = 0.0
+         if Δ(Output(Integer'First,     Integer'First), 0.0) < 0.00000000000001 and
+            Δ(Output(Integer'First + 1, Integer'First), 0.0) < 0.00000000000001
          then
             Register_Test_Result("Test_Conjugate_Gradient",
                                  True,

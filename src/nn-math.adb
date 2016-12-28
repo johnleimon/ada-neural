@@ -82,6 +82,17 @@ package body NN.Math is
       return Input_Weights + Learning_Rate * Actual_Output * Transpose(Input);
    end Unsupervised_Hebb;
 
+   -----------
+   -- Delta --
+   -----------
+
+   function Δ (Left  : Long_Long_Float;
+               Right : Long_Long_Float) return Long_Long_Float
+   is
+   begin
+      return ABS(Left - Right);
+   end;
+
    --------------------
    -- Eucledian_Norm --
    --------------------

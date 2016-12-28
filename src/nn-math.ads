@@ -53,6 +53,9 @@ package NN.Math is
                                     Learning_Rate < 0.0 and
                                     Input_Weights'Length(2) = Input'Length(1);
 
+   function Δ (Left  : Long_Long_Float;
+               Right : Long_Long_Float) return Long_Long_Float;
+
    function Eucledian_Norm (Input : Real_Matrix) return Long_Long_Float;
 
    function Positive_Definite (Input : Real_Matrix) return Boolean;
