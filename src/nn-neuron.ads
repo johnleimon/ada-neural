@@ -22,17 +22,13 @@
 -----------------------------------------------------------------
 with Ada.Containers.Indefinite_Vectors; use Ada.Containers;
 with Ada.Unchecked_Deallocation;
-with NN.Math;
+with NN.Math; use NN.Math;
 
 package NN.Neuron is
 
    use NN.Math.Super_Matrixes;
 
-   type Float_Array is array (Integer range <>) of Long_Long_Float;
    type Transfer_Function_Array is array (Integer range <>) of Transfer_Function;
-
-   type Float_Array_Access is access all Float_Array;
-   type Real_Matrix_Access is access all Real_Matrix;
    type Transfer_Function_Array_Access is access all Transfer_Function_Array;
 
    procedure Free is new Ada.Unchecked_Deallocation(Float_Array, Float_Array_Access);
@@ -63,24 +59,22 @@ package NN.Neuron is
                           with Pre => Number_Of_Neurons > 0 and
                                       Number_Of_Inputs > 0;
 
-     -- TODO TODO TODO TODO TODO --
---   function Create_Layer_Random (Number_Of_Neurons : Natural;
---                                 Number_Of_Inputs  : Natural;
---                                 Transfer          : Transfer_Function;
---                                 Input_Weights     : Real_Matrix_Access) return Neural_Layer
---                                 with Pre => Number_Of_Neurons > 0 and
---                                             Number_Of_Inputs > 0;
---   -- Creates a layer with neurons that have biases and weights --
---   -- with random numbers between 0.0 and 0.99999               --
+   function Create_Layer_Random (Number_Of_Neurons : Natural;
+                                 Number_Of_Inputs  : Natural;
+                                 Transfer          : Transfer_Function) return Neural_Layer
+                                 with Pre => Number_Of_Neurons > 0 and
+                                             Number_Of_Inputs > 0;
+   -- Creates a layer with neurons that have biases and weights --
+   -- with random numbers between 0.0 and 0.99999               --
 
-   procedure Delete_Layer (Layer : in out Neural_Layer);
+   procedure Delete (Layer : in out Neural_Layer);
 
    function Create_Hamming_Network (Number_Of_Neurons : Natural;
                                     Number_Of_Inputs  : Natural;
                                     Prototypes        : Real_Matrix_Access;
                                     Bias              : Long_Long_Float) return Hamming_Network;
 
-   procedure Delete_Hamming_Network (Network : in out Hamming_Network);
+   procedure Delete (Network : in out Hamming_Network);
 
    function Fire (Layer  : Neural_Layer;
                   Input  : Real_Matrix) return Real_Matrix;

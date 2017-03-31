@@ -21,7 +21,8 @@
 -- THIS SOFTWARE.                                              --
 -----------------------------------------------------------------
 with Ada.Text_IO; use Ada.Text_IO;
-with NN.Math;
+with NN.Math;     use NN.Math;
+with NN.Neuron;   use NN.Neuron;
 
 package NN.IO is
 
@@ -33,8 +34,9 @@ package NN.IO is
    GREEN   : constant String := Character'Val(16#1B#) & "[92m";
    RED     : constant String := Character'Val(16#1B#) & "[31m";
 
+   procedure Put (Layer : Neural_Layer);
    procedure Put (Matrix : Real_Matrix);
-
+   procedure Put (Input : Float_Array);
    procedure Put_Float (Input : Long_Long_Float);
 
 end NN.IO;

@@ -31,6 +31,39 @@ package body NN.IO is
    -- Put --
    ---------
 
+   procedure Put
+     (Layer : Neural_Layer)
+   is
+   begin
+
+      Put_Line("Inputs: ");
+      Put(Layer.Weights.all);
+      Put_Line("Bias: ");
+      Put(Layer.Bias.all);
+
+   end Put;
+
+   ---------
+   -- Put --
+   ---------
+
+   procedure Put (Input : Float_Array)
+   is
+   begin
+      for I in Input'Range loop
+         Put("   ");
+         Float_Text_IO.Put(Item => Input(I),
+                           Fore =>  3,
+                           Aft  => 24,
+                           Exp  =>  0);
+         New_Line;
+      end loop;
+   end Put;
+
+   ---------
+   -- Put --
+   ---------
+
    procedure Put (Matrix : Real_Matrix)
    is
    begin

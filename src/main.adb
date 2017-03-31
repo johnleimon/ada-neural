@@ -69,9 +69,9 @@ procedure Main is
       Number_Of_Neurons : Natural             := 2;
       Number_Of_Inputs  : Natural             := 3;
       Transfer          : Transfer_Function   := satlin'access;
-      Input_Weights     : aliased Real_Matrix := Create_Real_Matrix(Number_Of_Neurons, Number_Of_Inputs);
+      Input_Weights     : Real_Matrix_Access  := Create_Real_Matrix(Number_Of_Neurons, Number_Of_Inputs);
       Bias              : Long_Long_Float     := 0.0;
-      Input             : Real_Matrix         := Create_Real_Matrix(Number_Of_Inputs, 1);
+      Input             : Real_Matrix_Access  := Create_Real_Matrix(Number_Of_Inputs, 1);
       Test_Name         : String              := "Test_Create_Layer";
       Test_Result       : Boolean             := False;                           
       Test_Layer        : Neural_Layer;
@@ -93,12 +93,12 @@ procedure Main is
       Test_Layer := Create_Layer(Number_Of_Neurons => Number_Of_Neurons,
                                  Number_Of_Inputs  => Number_Of_Inputs,
                                  Transfer          => Transfer,
-                                 Input_Weights     => Input_Weights'Unchecked_access,
+                                 Input_Weights     => Input_Weights,
                                  Bias              => Bias);
                                   
       -- Fire neuron layer --
       declare
-         Output : Real_Matrix := Fire(Test_Layer, Input);
+         Output : Real_Matrix := Fire(Test_Layer, Input.all);
       begin
          -- Evaluate output --
          if Output(Output'First,     Output'First) = 0.75 and
@@ -107,8 +107,11 @@ procedure Main is
             Test_Result := True;
          end if;
       
-         Register_Test_Result(Test_Name, Test_Result, Input, Output);
+         Register_Test_Result(Test_Name, Test_Result, Input.all, Output);
       end;
+
+      Free (Input);
+      Delete (Test_Layer);
       
    end Test_Create_Layer;
 
@@ -213,8 +216,8 @@ procedure Main is
       --          |    |          |    | --
       --          | -1 |          | -1 | --
 
-      Prototypes  : aliased Real_Matrix := ( ( 1.0, -1.0, -1.0 ),
-                                             ( 1.0,  1.0, -1.0 ) );
+      Prototypes  : Real_Matrix_Access  := new Real_Matrix'( ( 1.0, -1.0, -1.0 ),
+                                                             ( 1.0,  1.0, -1.0 ) );
       Input       : Real_Matrix         := ( ( Integer'First => -1.0 ),
                                              ( Integer'First => -1.0 ),
                                              ( Integer'First => -1.0 ) );
@@ -226,7 +229,7 @@ procedure Main is
       -- Setup Hamming Network layers --
       Network := Create_Hamming_Network(Number_Of_Neurons => 2,
                                         Number_Of_Inputs  => 3,
-                                        Prototypes        => Prototypes'Unchecked_Access,
+                                        Prototypes        => Prototypes,
                                         Bias              => 3.0);
                                  
       -- Fire Hamming Network layers --
@@ -241,6 +244,8 @@ procedure Main is
 
          Register_Test_Result(Test_Name, Test_Result, Input, Output);
       end;
+
+      Delete (Network);
 
    end Test_Fire_Hamming_Network;
 

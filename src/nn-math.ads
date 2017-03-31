@@ -27,12 +27,16 @@ package NN.Math is
    package Super_Matrixes is new Ada.Numerics.Generic_Real_Arrays(Long_Long_Float);
    use Super_Matrixes;
 
+   type Float_Array is array (Integer range <>) of Long_Long_Float;
+   type Float_Array_Access is access all Float_Array;
+   type Real_Matrix_Access is access all Real_Matrix;
+
    Matrix_Not_Positive_Definite : exception;
    Matrix_Not_Symmetric         : exception;
 
    function PseudoInverse (Input : Real_Matrix) return Real_Matrix;
-   function Create_Real_Matrix (Rows : Natural; 
-                             Columns : Natural ) return Real_Matrix;
+   function Create_Real_Matrix (Rows : Natural;
+                             Columns : Natural ) return Real_Matrix_Access;
 
    function Widrow_Hoff_Delta (Input_Weights  : Real_Matrix;
                                Learning_Rate  : Long_Long_Float;
@@ -74,5 +78,10 @@ package NN.Math is
 
    function "/" (Left  : Real_Matrix;
                  Right : Real_Matrix) return Real_Matrix;
+
+   function Random_Input_Weight return Long_Long_Float;
+   -- Return number between -1.0 and 1.0 --
+   function Random_Bias return Long_Long_Float;
+   -- Return number between -1.0 and 1.0 --
 
 end NN.Math;

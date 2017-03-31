@@ -21,11 +21,13 @@
 -- THIS SOFTWARE.                                              --
 -----------------------------------------------------------------
 with Ada.Numerics.Generic_Elementary_Functions;
-
-with nn.io; use nn.io;
-with ada.text_io; use ada.text_io;
+with Ada.Numerics.Float_Random; use Ada.Numerics.Float_Random;
+with NN.IO; use NN.IO;
+with Ada.Text_IO; use Ada.Text_IO;
 
 package body NN.Math is
+
+   Float_Generator : Generator;
 
    package Math_Functions is new Ada.Numerics.Generic_Elementary_Functions(Long_Long_Float);
    use Math_Functions;
@@ -44,12 +46,12 @@ package body NN.Math is
    ------------------------
    -- Create_Real_Matrix --
    ------------------------
-   
+
    function Create_Real_Matrix (Rows    : Natural;
-                                Columns : Natural) return Real_Matrix
+                                Columns : Natural) return Real_Matrix_Access
    is
-      Output : Real_Matrix(Integer'First .. Integer'First + Rows - 1,
-                           Integer'First .. Integer'First + Columns - 1);
+      Output : Real_Matrix_Access := new Real_Matrix(Integer'First .. Integer'First + Rows - 1,
+                                                     Integer'First .. Integer'First + Columns - 1);
       Pragma Warnings(Off, Output);
    begin
       return Output;
@@ -160,11 +162,11 @@ package body NN.Math is
 
       return Output;
    end Gradient;
-   
+
    ------------------------
    -- Conjugate_Gradient --
    ------------------------
-   
+
    function Conjugate_Gradient (Input              : Real_Matrix;
                                 Initial_Guess      : Real_Matrix;
                                 Convergence_Window : Long_Long_Float := 0.00000001) return Real_Matrix
@@ -194,19 +196,19 @@ package body NN.Math is
          begin
             -- Compute first step of conjugate gradient --
             x := x + abs(α(α'First(1), α'First(2))) * p0;                            -- [9.69] --
-   
+
             -- Compute gradient at x1 --
             g1 := Gradient(Input, x);                                                -- [9.70] --
-   
+
             declare
                β : Real_Matrix := (Transpose(g1) * g1) / (Transpose(g0) * g0);       -- [9.71] --
             begin
                -- Compute second search direction --
                p1 := -g1 + β(β'First(1), β'First(2)) * p0;                           -- [9.72] --
-   
+
                -- Compute learning rate of next iteration --
                α := (Transpose(-g1) * p1) / (Transpose(p1) * Input * p1);            -- [9.73] --
-   
+
                -- Compute next step of conjugate gradient --
                x := x + α(α'First(1), α'First(2)) * p1;                              -- [9.74] --
             end;
@@ -226,11 +228,11 @@ package body NN.Math is
       return x;
 
    end Conjugate_Gradient;
-   
+
    ------------------------------------
    -- Real_Matrix Division Operation --
    ------------------------------------
-   
+
    function "/" (Left  : Real_Matrix;
                  Right : Real_Matrix) return Real_Matrix
    is
@@ -238,4 +240,28 @@ package body NN.Math is
       return Left * Inverse(Right);
    end "/";
 
+   -------------------------
+   -- Random_Input_Weight --
+   -------------------------
+
+   function Random_Input_Weight
+      return Long_Long_Float
+   is
+   begin
+      return Long_Long_Float (Random (Float_Generator)) * 2.0 - 1.0;
+   end Random_Input_Weight;
+
+   -----------------
+   -- Random_Bias --
+   -----------------
+
+   function Random_Bias
+      return Long_Long_Float
+   is
+   begin
+      return Long_Long_Float (Random (Float_Generator)) * 2.0 - 1.0;
+   end Random_Bias;
+
+begin
+   Reset(Float_Generator);
 end NN.Math;

@@ -22,8 +22,9 @@
 -----------------------------------------------------------------
 with Ada.Numerics.Discrete_Random;
 with Ada.Text_IO;                  use Ada.Text_IO;
-with NN.Transfer;                  use NN.Transfer;
 with NN.IO;                        use NN.IO;
+with NN.Math;                      USE NN.Math;
+with NN.Transfer;                  use NN.Transfer;
 
 package body NN.Neuron is
 
@@ -107,17 +108,44 @@ package body NN.Neuron is
       return Output;
    end Create_Layer;
 
-   ------------------
-   -- Delete_Layer --
-   ------------------
+   -------------------------
+   -- Create_Layer_Random --
+   -------------------------
 
-   procedure Delete_Layer (Layer : in out Neural_Layer)
+   function Create_Layer_Random
+     (Number_Of_Neurons : Natural;
+      Number_Of_Inputs  : Natural;
+      Transfer          : Transfer_Function) return Neural_Layer
+   is
+      Bias_Array     : Float_Array_Access             := new Float_Array(Integer'First .. Integer'First + Number_Of_Neurons - 1);
+      Transfer_Array : Transfer_Function_Array_Access := new Transfer_Function_Array(Integer'First .. Integer'First + Number_Of_Neurons - 1);
+      Input_Weights  : Real_Matrix_Access             := new Real_Matrix (Integer'First .. Integer'First + Number_Of_Inputs -1,
+                                                                          Integer'First .. Integer'First);
+      Output         : Neural_Layer;
+   begin
+
+      Input_Weights.all  := (others => (others => Random_Input_Weight));
+      Bias_Array.all     := (others => Random_Bias);
+      Transfer_Array.all := (others => Transfer);
+
+      Output.Bias               := Bias_Array;
+      Output.Weights            := Input_Weights;
+      Output.Transfer_Functions := Transfer_Array;
+
+      return Output;
+   end Create_Layer_Random;
+
+   -----------
+   -- Delete--
+   -----------
+
+   procedure Delete(Layer : in out Neural_Layer)
    is
    begin
       Free(Layer.Bias);
       Free(Layer.Weights);
       Free(Layer.Transfer_Functions);
-   end Delete_Layer;
+   end Delete;
 
    ----------------------------
    -- Create_Hamming_Network --
@@ -165,16 +193,16 @@ package body NN.Neuron is
 
    end Create_Hamming_Network;
 
-   ----------------------------
-   -- Delete_Hamming_Network --
-   ----------------------------
+   ------------
+   -- Delete --
+   ------------
 
-   procedure Delete_Hamming_Network (Network : in out Hamming_Network)
+   procedure Delete (Network : in out Hamming_Network)
    is
    begin
-      Delete_Layer(Network.Feedforward);
-      Delete_Layer(Network.Recurrent);
-   end Delete_Hamming_Network;
+      Delete (Network.Feedforward);
+      Delete (Network.Recurrent);
+   end Delete;
 
    ----------
    -- Fire --
@@ -191,7 +219,7 @@ package body NN.Neuron is
 
       for Neuron_Index in Integer'First .. Integer'First + Layer.Transfer_Functions'Length - 1 loop
          Sum := 0.0;
-         
+
          for Input_Index in Layer.Weights'Range(2) loop
             Weight := Layer.Weights(Neuron_Index, Input_Index);
             Sum    := Sum + Input(Input_Index, Integer'First) * Weight;
