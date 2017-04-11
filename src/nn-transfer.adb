@@ -27,29 +27,34 @@ package body NN.Transfer is
 
    Euler : constant := Ada.Numerics.e;
 
-   package Elementary_Functions is new Ada.Numerics.Generic_Elementary_Functions(Long_Long_Float);
+   package Elementary_Functions is new
+           Ada.Numerics.Generic_Elementary_Functions (Long_Long_Float);
    use Elementary_Functions;
 
    ----------------
    -- Hard_Limit --
    ----------------
 
-   function Hard_Limit (input : Long_Long_Float) return Long_Long_Float is
+   function Hard_Limit
+      (input : Long_Long_Float)
+       return Long_Long_Float is
    begin
-      if input >= 0.0 then                          
+      if input >= 0.0 then
          return 1.0;
       else
          return 0.0;
       end if;
    end Hard_Limit;
-   
+
    ----------------------------
    -- Symmetrical_Hard_Limit --
    ----------------------------
 
-   function Symmetrical_Hard_Limit (input : Long_Long_Float) return Long_Long_Float is
+   function Symmetrical_Hard_Limit
+      (input : Long_Long_Float)
+       return Long_Long_Float is
    begin
-      if input >= 0.0 then                          
+      if input >= 0.0 then
          return 1.0;
       else
          return -1.0;
@@ -60,7 +65,9 @@ package body NN.Transfer is
    -- Linear --
    ------------
 
-   function Linear (input : Long_Long_Float) return Long_Long_Float is
+   function Linear
+      (input : Long_Long_Float)
+       return Long_Long_Float is
    begin
       return input;
    end Linear;
@@ -69,7 +76,9 @@ package body NN.Transfer is
    -- Saturating_Linear --
    -----------------------
 
-   function Saturating_Linear (input : Long_Long_Float) return Long_Long_Float is
+   function Saturating_Linear
+      (input : Long_Long_Float)
+       return Long_Long_Float is
    begin
       if input > 1.0 then
          return 1.0;
@@ -84,7 +93,9 @@ package body NN.Transfer is
    -- Symmetric_Saturating_Linear --
    ---------------------------------
 
-   function Symmetric_Saturating_Linear (input : Long_Long_Float) return Long_Long_Float is
+   function Symmetric_Saturating_Linear
+      (input : Long_Long_Float)
+       return Long_Long_Float is
    begin
       if input > 1.0 then
          return 1.0;
@@ -99,27 +110,33 @@ package body NN.Transfer is
    -- Log_Sigmoid --
    -----------------
 
-   function Log_Sigmoid (input : Long_Long_Float) return Long_Long_Float is
+   function Log_Sigmoid
+      (input : Long_Long_Float)
+       return Long_Long_Float is
    begin
-      return 1.0 / (1.0 + Euler**(-input));
+      return 1.0 / (1.0 + Euler** (-input));
    end Log_Sigmoid;
 
    --------------------------------
    -- Hyperbolic_Tangent_Sigmoid --
    --------------------------------
 
-   function Hyperbolic_Tangent_Sigmoid (input : Long_Long_Float) return Long_Long_Float is
+   function Hyperbolic_Tangent_Sigmoid
+      (input : Long_Long_Float)
+       return Long_Long_Float is
    begin
-      return (Euler**input - Euler**(-input)) 
+      return (Euler**input - Euler** (-input))
                            /
-             (Euler**input + Euler**(-input));
+             (Euler**input + Euler** (-input));
    end Hyperbolic_Tangent_Sigmoid;
 
    ---------------------
    -- Positive_Linear --
    ---------------------
 
-   function Positive_Linear (input : Long_Long_Float) return Long_Long_Float is
+   function Positive_Linear
+      (input : Long_Long_Float)
+       return Long_Long_Float is
    begin
       if input < 0.0 then
          return 0.0;
@@ -129,5 +146,5 @@ package body NN.Transfer is
    end Positive_Linear;
 
 begin
-  null;
+   null;
 end NN.Transfer;

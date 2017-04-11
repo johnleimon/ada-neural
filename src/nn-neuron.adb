@@ -21,19 +21,25 @@
 -- THIS SOFTWARE.                                              --
 -----------------------------------------------------------------
 with Ada.Numerics.Discrete_Random;
-with Ada.Text_IO;                  use Ada.Text_IO;
-with NN.IO;                        use NN.IO;
-with NN.Math;                      USE NN.Math;
-with NN.Transfer;                  use NN.Transfer;
+with Ada.Text_IO;
+   use Ada.Text_IO;
+with NN.IO;
+   use NN.IO;
+with NN.Math;
+   use NN.Math;
+with NN.Transfer;
+   use NN.Transfer;
 
 package body NN.Neuron is
 
    Weight_And_Bias_Floor   : constant :=      0;
    Weight_And_Bias_Ceiling : constant :=  99999;
 
-   type Weight_And_Bias_Range is range Weight_And_Bias_Floor .. Weight_And_Bias_Ceiling;
+   type Weight_And_Bias_Range is
+      range Weight_And_Bias_Floor .. Weight_And_Bias_Ceiling;
 
-   package Random is new Ada.Numerics.Discrete_Random (Weight_And_Bias_Range);
+   package Random is new
+      Ada.Numerics.Discrete_Random (Weight_And_Bias_Range);
 
    ---------------------
    -- Generate_Weight --
@@ -42,8 +48,9 @@ package body NN.Neuron is
    function Generate_Weight return Long_Long_Float is
       Seed : Random.Generator;
    begin
-      Random.Reset(Seed);
-      return Long_Long_Float(Random.Random(Seed)) / Long_Long_Float(Weight_And_Bias_Ceiling);
+      Random.Reset (Seed);
+      return Long_Long_Float (Random.Random (Seed)) /
+             Long_Long_Float (Weight_And_Bias_Ceiling);
    end Generate_Weight;
 
    --------------------------
@@ -52,18 +59,20 @@ package body NN.Neuron is
 
    procedure Identify_Convergence (Neuron_Outputs : in  Real_Matrix;
                                    Has_Converged  : out Boolean;
+                                   Neuron_Fired   : out Integer);
+   -- A Hamming Network has converged when all neuron --
+   -- outputs except exactly one are zero.            --
+
+   procedure Identify_Convergence (Neuron_Outputs : in  Real_Matrix;
+                                   Has_Converged  : out Boolean;
                                    Neuron_Fired   : out Integer)
    is
       Non_Zero_Count : Natural := 0;
    begin
-
-      -- A Hamming Network has converged when all neuron --
-      -- outputs except exactly one are zero.            --
-
       -- Count neurons with zero output --
-      for I in Neuron_Outputs'Range(1) loop
-         for J in Neuron_Outputs'Range(2) loop
-            if Neuron_Outputs(I, J) /= 0.0 then
+      for I in Neuron_Outputs'Range (1) loop
+         for J in Neuron_Outputs'Range (2) loop
+            if Neuron_Outputs (I, J) /= 0.0 then
                Neuron_Fired   := I;
                Non_Zero_Count := Non_Zero_Count + 1;
             end if;
@@ -87,14 +96,22 @@ package body NN.Neuron is
    -- Create_Layer --
    ------------------
 
-   function Create_Layer (Number_Of_Neurons : Natural;
-                          Number_Of_Inputs  : Natural;
-                          Transfer          : Transfer_Function;
-                          Input_Weights     : Real_Matrix_Access;
-                          Bias              : Long_Long_Float := 0.0) return Neural_Layer
+   function Create_Layer
+      (Number_Of_Neurons : Natural;
+       Number_Of_Inputs  : Natural;
+       Transfer          : Transfer_Function;
+       Input_Weights     : Real_Matrix_Access;
+       Bias              : Long_Long_Float := 0.0)
+       return Neural_Layer
    is
-      Bias_Array     : Float_Array_Access             := new Float_Array(Integer'First .. Integer'First + Number_Of_Neurons - 1);
-      Transfer_Array : Transfer_Function_Array_Access := new Transfer_Function_Array(Integer'First .. Integer'First + Number_Of_Neurons - 1);
+      Bias_Array     : Float_Array_Access :=
+                       new Float_Array
+                         (Integer'First ..
+                          Integer'First + Number_Of_Neurons - 1);
+      Transfer_Array : Transfer_Function_Array_Access :=
+                       new Transfer_Function_Array
+                         (Integer'First ..
+                          Integer'First + Number_Of_Neurons - 1);
       Output         : Neural_Layer;
    begin
 
@@ -115,16 +132,28 @@ package body NN.Neuron is
    function Create_Layer_Random
      (Number_Of_Neurons : Natural;
       Number_Of_Inputs  : Natural;
-      Transfer          : Transfer_Function) return Neural_Layer
+      Transfer          : Transfer_Function)
+      return Neural_Layer
    is
-      Bias_Array     : Float_Array_Access             := new Float_Array(Integer'First .. Integer'First + Number_Of_Neurons - 1);
-      Transfer_Array : Transfer_Function_Array_Access := new Transfer_Function_Array(Integer'First .. Integer'First + Number_Of_Neurons - 1);
-      Input_Weights  : Real_Matrix_Access             := new Real_Matrix (Integer'First .. Integer'First + Number_Of_Inputs -1,
-                                                                          Integer'First .. Integer'First);
+      Bias_Array     : Float_Array_Access :=
+                       new Float_Array
+                         (Integer'First ..
+                          Integer'First + Number_Of_Neurons - 1);
+      Transfer_Array : Transfer_Function_Array_Access :=
+                       new Transfer_Function_Array
+                         (Integer'First ..
+                          Integer'First + Number_Of_Neurons - 1);
+      Input_Weights  : Real_Matrix_Access :=
+                       new Real_Matrix
+                         (Integer'First ..
+                          Integer'First + Number_Of_Inputs - 1,
+                          Integer'First ..
+                          Integer'First);
       Output         : Neural_Layer;
    begin
 
-      Input_Weights.all  := (others => (others => Random_Input_Weight));
+      Input_Weights.all  := (others =>
+                              (others => Random_Input_Weight));
       Bias_Array.all     := (others => Random_Bias);
       Transfer_Array.all := (others => Transfer);
 
@@ -139,27 +168,33 @@ package body NN.Neuron is
    -- Delete--
    -----------
 
-   procedure Delete(Layer : in out Neural_Layer)
+   procedure Delete (Layer : in out Neural_Layer)
    is
    begin
-      Free(Layer.Bias);
-      Free(Layer.Weights);
-      Free(Layer.Transfer_Functions);
+      Free (Layer.Bias);
+      Free (Layer.Weights);
+      Free (Layer.Transfer_Functions);
    end Delete;
 
    ----------------------------
    -- Create_Hamming_Network --
    ----------------------------
 
-   function Create_Hamming_Network (Number_Of_Neurons : Natural;
-                                    Number_Of_Inputs  : Natural;
-                                    Prototypes        : Real_Matrix_Access;
-                                    Bias              : Long_Long_Float) return Hamming_Network
+   function Create_Hamming_Network
+      (Number_Of_Neurons : Natural;
+       Number_Of_Inputs  : Natural;
+       Prototypes        : Real_Matrix_Access;
+       Bias              : Long_Long_Float)
+       return Hamming_Network
    is
       ε                       : constant := 0.5;
       Output                  : Hamming_Network;
-      Recurrent_Input_Weights : Real_Matrix_Access := new Real_Matrix (Integer'First .. Integer'First + Number_Of_Neurons - 1,
-                                                                       Integer'First .. Integer'First + Number_Of_Neurons - 1);
+      Recurrent_Input_Weights : Real_Matrix_Access :=
+         new Real_Matrix
+           (Integer'First ..
+            Integer'First + Number_Of_Neurons - 1,
+            Integer'First ..
+            Integer'First + Number_Of_Neurons - 1);
    begin
 
       -- Our recurrent input weights matrix for a 2 x 2 matrix --
@@ -168,36 +203,55 @@ package body NN.Neuron is
       --               | -ε    1  |                            --
 
       -- Build recurrent input weights matrix --
-      for I in Recurrent_Input_Weights'Range(1) loop
-         for J in Recurrent_Input_Weights'Range(2) loop
-            if Abs(I - J) + 1 = Recurrent_Input_Weights'Length(1) then
-               Recurrent_Input_Weights(I, J) := -ε;
+      for I in Recurrent_Input_Weights'Range (1) loop
+         for J in Recurrent_Input_Weights'Range (2) loop
+            if abs (I - J) + 1 =
+               Recurrent_Input_Weights'Length (1)
+            then
+               Recurrent_Input_Weights (I, J) := -ε;
             else
-               Recurrent_Input_Weights(I, J) := 1.0;
+               Recurrent_Input_Weights (I, J) := 1.0;
             end if;
          end loop;
       end loop;
 
-      Output.Feedforward := Create_Layer(Number_Of_Neurons,
-                                         Number_Of_Inputs,
-                                         Linear'Access,
-                                         Prototypes,
-                                         Bias);
-      Output.Recurrent   := Create_Layer(Number_Of_Neurons,
-                                         Number_Of_Inputs,
-                                         Positive_Linear'Access,
-                                         Recurrent_Input_Weights,
-                                         Bias);
+      Output.Feedforward := Create_Layer (Number_Of_Neurons,
+                                          Number_Of_Inputs,
+                                          Linear'Access,
+                                          Prototypes,
+                                          Bias);
+      Output.Recurrent   := Create_Layer (Number_Of_Neurons,
+                                          Number_Of_Inputs,
+                                          Positive_Linear'Access,
+                                          Recurrent_Input_Weights,
+                                          Bias);
 
       return Output;
 
    end Create_Hamming_Network;
 
+   -------------------------------
+   -- Create_Sensitivity_Matrix --
+   -------------------------------
+
+   function Create_Sensitivity_Matrix
+     (Network : Neural_Network)
+      return Real_Matrix_Access_Array
+   is
+      Output : Real_Matrix_Access_Array (Network'Range);
+   begin
+      for I in Network'Range loop
+         Output (I) := Create_Real_Matrix (Network (I).Bias'Length, 1);
+      end loop;
+      return Output;
+   end Create_Sensitivity_Matrix;
+
    ------------
    -- Delete --
    ------------
 
-   procedure Delete (Network : in out Hamming_Network)
+   procedure Delete
+     (Network : in out Hamming_Network)
    is
    begin
       Delete (Network.Feedforward);
@@ -208,25 +262,34 @@ package body NN.Neuron is
    -- Fire --
    ----------
 
-   function Fire (Layer  : in  Neural_Layer;
-                  Input  : in  Real_Matrix) return Real_Matrix
+   function Fire
+      (Layer  : in  Neural_Layer;
+       Input  : in  Real_Matrix)
+       return Real_Matrix
    is
-      Weight             : Long_Long_Float;
-      Sum                : Long_Long_Float;
-      Output             : Real_Matrix (Integer'First .. Integer'First + Layer.Transfer_Functions'Length - 1,
-                                        Integer'First .. Integer'First);
+      Weight : Long_Long_Float;
+      Sum    : Long_Long_Float;
+      Output : Real_Matrix
+               (Integer'First ..
+                Integer'First + Layer.Transfer_Functions'Length - 1,
+                Integer'First ..
+                Integer'First);
    begin
 
-      for Neuron_Index in Integer'First .. Integer'First + Layer.Transfer_Functions'Length - 1 loop
+      for Neuron_Index in Integer'First ..
+                          Integer'First +
+                          Layer.Transfer_Functions'Length - 1
+      loop
          Sum := 0.0;
-
-         for Input_Index in Layer.Weights'Range(2) loop
-            Weight := Layer.Weights(Neuron_Index, Input_Index);
-            Sum    := Sum + Input(Input_Index, Integer'First) * Weight;
+         for Input_Index in Layer.Weights'Range (1) loop
+            Weight := Layer.Weights (Input_Index, Integer'First);
+            Sum    := Sum + Input (Input_Index,
+                                   Integer'First) * Weight;
          end loop;
 
-         Sum                                 := Sum + Layer.Bias(Neuron_Index); 
-         Output(Neuron_Index, Integer'First) := Layer.Transfer_Functions(Neuron_Index)(Sum);
+         Sum := Sum + Layer.Bias (Neuron_Index);
+         Output (Neuron_Index, Integer'First) :=
+            Layer.Transfer_Functions (Neuron_Index)(Sum);
       end loop;
 
       return Output;
@@ -237,45 +300,66 @@ package body NN.Neuron is
    -- Recursive_Fire --
    --------------------
 
-   function Recursive_Fire (Network : Neural_Network;
-                            Input   : Real_Matrix;
-                            Layer   : Integer) return Real_Matrix
+   function Recursive_Fire
+      (Network : Neural_Network;
+       Input   : Real_Matrix;
+       Layer   : Integer)
+       return Real_Matrix;
+   -- Fire, iterating through every layer in a network --
+
+   function Recursive_Fire
+      (Network : Neural_Network;
+       Input   : Real_Matrix;
+       Layer   : Integer)
+       return Real_Matrix
    is
    begin
       if Layer = Network'Last + 1 then
          return Input;
       end if;
 
-      return Recursive_Fire(Network, Fire(Network(Layer), Input), Layer + 1);
+      return Recursive_Fire (Network,
+                             Fire (Network (Layer), Input),
+                             Layer + 1);
    end Recursive_Fire;
 
    ----------
    -- Fire --
    ----------
 
-   function Fire (Network : in  Neural_Network;
-                  Input   : in  Real_Matrix) return Real_Matrix
+   function Fire
+      (Network : in  Neural_Network;
+       Input   : in  Real_Matrix)
+       return Real_Matrix
    is
    begin
-      return Recursive_Fire(Network, Input, Network'First);
+      return Recursive_Fire (Network, Input, Network'First);
    end Fire;
 
    ----------------------------
    -- Recursive_Hamming_Fire --
    ----------------------------
 
-   function Recursive_Hamming_Fire (Network : Neural_Layer;
-                                    Input   : Real_Matrix) return Real_Matrix
+   function Recursive_Hamming_Fire
+      (Network : Neural_Layer;
+       Input   : Real_Matrix)
+       return Real_Matrix;
+
+   function Recursive_Hamming_Fire
+      (Network : Neural_Layer;
+       Input   : Real_Matrix)
+       return Real_Matrix
    is
-      Has_Converged      : Boolean;
-      Neuron_Fired       : Integer;
+      Has_Converged : Boolean;
+      Neuron_Fired  : Integer;
    begin
-      Identify_Convergence(Input, Has_Converged, Neuron_Fired);
+      Identify_Convergence (Input, Has_Converged, Neuron_Fired);
 
       if Has_Converged then
          return Input;
       else
-         return Recursive_Hamming_Fire(Network, Fire(Network, Input));
+         return Recursive_Hamming_Fire (Network,
+                                        Fire (Network, Input));
       end if;
    end Recursive_Hamming_Fire;
 
@@ -283,14 +367,18 @@ package body NN.Neuron is
    -- Fire --
    ----------
 
-   function Fire (Network : Hamming_Network;
-                  Input   : Real_Matrix) return Real_Matrix
+   function Fire
+      (Network : Hamming_Network;
+       Input   : Real_Matrix)
+       return Real_Matrix
    is
    begin
       declare
-         Feedforward_Output : Real_Matrix := Fire(Network.Feedforward, Input);
+         Feedforward_Output : Real_Matrix := Fire (Network.Feedforward,
+                                                   Input);
       begin
-         return Recursive_Hamming_Fire(Network.Recurrent, Feedforward_Output);
+         return Recursive_Hamming_Fire (Network.Recurrent,
+                                        Feedforward_Output);
       end;
    end Fire;
 
