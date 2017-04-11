@@ -91,7 +91,10 @@ package NN.Neuron is
    function Fire
       (Layer  : Neural_Layer;
        Input  : Real_Matrix)
-       return Real_Matrix;
+       return Real_Matrix
+       with Pre =>
+            Layer.Weights'Length (2) = Input'Length (1) and
+            Layer.Weights'Length (1) = Layer.Bias'Length;
 
    function Fire
       (Network : Neural_Network;

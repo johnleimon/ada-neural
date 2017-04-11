@@ -152,17 +152,16 @@ package body NN.Math is
    function Symmetric (Input : Real_Matrix) return Boolean
    is
    begin
-      if Input = Transpose (Input)
-      then
+      if Input = Transpose (Input) then
          return True;
       else
          return False;
       end if;
    end Symmetric;
 
-    --------------
-    -- Gradient --
-    --------------
+   --------------
+   -- Gradient --
+   --------------
 
    function Gradient (Input : Real_Matrix;
                       Point : Real_Matrix) return Real_Matrix

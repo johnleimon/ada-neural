@@ -37,7 +37,7 @@ procedure Main is
 
    use NN.Math.Super_Matrixes;
 
-   DEBUG   : constant Boolean := True; -- Prints full debug info --
+   DEBUG   : constant Boolean := False; -- Prints full debug info --
 
    --------------------------
    -- Register_Test_Result --
@@ -111,8 +111,6 @@ procedure Main is
                        Transfer          => Transfer,
                        Input_Weights     => Input_Weights,
                        Bias              => Bias);
-
-      Put (Test_Layer);
 
       -- Fire neuron layer --
       declare
