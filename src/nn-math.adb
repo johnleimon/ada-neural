@@ -2,7 +2,7 @@
 --                                                             --
 -- Mathematics                                                 --
 --                                                             --
--- Copyright (c) 2016, John Leimon                             --
+-- Copyright (c) 2016, 2017 John Leimon, Adam Schwem           --
 --                                                             --
 -- Permission to use, copy, modify, and/or distribute          --
 -- this software for any purpose with or without fee           --
@@ -21,9 +21,12 @@
 -- THIS SOFTWARE.                                              --
 -----------------------------------------------------------------
 with Ada.Numerics.Generic_Elementary_Functions;
-with Ada.Numerics.Float_Random; use Ada.Numerics.Float_Random;
-with NN.IO; use NN.IO;
-with Ada.Text_IO; use Ada.Text_IO;
+with Ada.Numerics.Float_Random;
+   use Ada.Numerics.Float_Random;
+with NN.IO;
+   use NN.IO;
+with Ada.Text_IO;
+   use Ada.Text_IO;
 
 package body NN.Math is
 
@@ -51,8 +54,10 @@ package body NN.Math is
    function Create_Real_Matrix (Rows    : Natural;
                                 Columns : Natural) return Real_Matrix
    is
-      Output : Real_Matrix (Integer'First .. Integer'First + Rows - 1,
-                            Integer'First .. Integer'First + Columns - 1);
+      Output : Real_Matrix (Integer'First ..
+                            Integer'First + Rows - 1,
+                            Integer'First ..
+                            Integer'First + Columns - 1);
       pragma Warnings (Off, Output);
    begin
       return Output;

@@ -2,7 +2,7 @@
 --                                                             --
 -- Mathematics Specification                                   --
 --                                                             --
--- Copyright (c) 2016, John Leimon                             --
+-- Copyright (c) 2016, 2017 John Leimon, Adam Schwem           --
 --                                                             --
 -- Permission to use, copy, modify, and/or distribute          --
 -- this software for any purpose with or without fee           --

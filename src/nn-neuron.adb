@@ -2,7 +2,7 @@
 --                                                             --
 -- Neuron                                                      --
 --                                                             --
--- Copyright (c) 2016, John Leimon, Adam Schwem                --
+-- Copyright (c) 2016, 2017 John Leimon, Adam Schwem           --
 --                                                             --
 -- Permission to use, copy, modify, and/or distribute          --
 -- this software for any purpose with or without fee           --
@@ -104,10 +104,8 @@ package body NN.Neuron is
        Bias              : Long_Long_Float := 0.0)
        return Neural_Layer
    is
-      Bias_Array     : Float_Array_Access :=
-                       new Float_Array
-                         (Integer'First ..
-                          Integer'First + Number_Of_Neurons - 1);
+      Bias_Matrix    : Real_Matrix_Access :=
+                       Create_Real_Matrix (Number_Of_Neurons, 1);
       Transfer_Array : Transfer_Function_Array_Access :=
                        new Transfer_Function_Array
                          (Integer'First ..
@@ -115,10 +113,10 @@ package body NN.Neuron is
       Output         : Neural_Layer;
    begin
 
-      Bias_Array.all     := (others => Bias);
+      Bias_Matrix.all    := (others => (others => Bias));
       Transfer_Array.all := (others => Transfer);
 
-      Output.Bias               := Bias_Array;
+      Output.Bias               := Bias_Matrix;
       Output.Weights            := Input_Weights;
       Output.Transfer_Functions := Transfer_Array;
 
@@ -135,30 +133,26 @@ package body NN.Neuron is
       Transfer          : Transfer_Function)
       return Neural_Layer
    is
-      Bias_Array     : Float_Array_Access :=
-                       new Float_Array
-                         (Integer'First ..
-                          Integer'First + Number_Of_Neurons - 1);
+      Bias_Matrix    : Real_Matrix_Access :=
+                       Create_Real_Matrix (Number_Of_Neurons, 1);
       Transfer_Array : Transfer_Function_Array_Access :=
                        new Transfer_Function_Array
                          (Integer'First ..
                           Integer'First + Number_Of_Neurons - 1);
-      Input_Weights  : Real_Matrix_Access :=
-                       new Real_Matrix
-                         (Integer'First ..
-                          Integer'First + Number_Of_Inputs - 1,
-                          Integer'First ..
-                          Integer'First);
+      Weights        : Real_Matrix_Access :=
+                       Create_Real_Matrix (Number_Of_Neurons,
+                                           Number_Of_Inputs);
       Output         : Neural_Layer;
    begin
 
-      Input_Weights.all  := (others =>
+      Weights.all        := (others =>
                               (others => Random_Input_Weight));
-      Bias_Array.all     := (others => Random_Bias);
+      Bias_Matrix.all    := (others =>
+                              (others => Random_Bias));
       Transfer_Array.all := (others => Transfer);
 
-      Output.Bias               := Bias_Array;
-      Output.Weights            := Input_Weights;
+      Output.Bias               := Bias_Matrix;
+      Output.Weights            := Weights;
       Output.Transfer_Functions := Transfer_Array;
 
       return Output;
@@ -241,7 +235,8 @@ package body NN.Neuron is
       Output : Real_Matrix_Access_Array (Network'Range);
    begin
       for I in Network'Range loop
-         Output (I) := Create_Real_Matrix (Network (I).Bias'Length, 1);
+         Output (I) := Create_Real_Matrix (Network (I).Bias'Length (1),
+                                           1);
       end loop;
       return Output;
    end Create_Sensitivity_Matrix;
@@ -267,33 +262,20 @@ package body NN.Neuron is
        Input  : in  Real_Matrix)
        return Real_Matrix
    is
-      Weight : Long_Long_Float;
-      Sum    : Long_Long_Float;
-      Output : Real_Matrix
-               (Integer'First ..
-                Integer'First + Layer.Transfer_Functions'Length - 1,
-                Integer'First ..
-                Integer'First);
+      Transfer_Input : Real_Matrix := Layer.Weights.all * Input +
+                                      Layer.Bias.all;
    begin
-
-      for Neuron_Index in Integer'First ..
-                          Integer'First +
-                          Layer.Transfer_Functions'Length - 1
-      loop
-         Sum := 0.0;
-         for Input_Index in Layer.Weights'Range (1) loop
-            Weight := Layer.Weights (Input_Index, Integer'First);
-            Sum    := Sum + Input (Input_Index,
-                                   Integer'First) * Weight;
+      declare
+         Output : Real_Matrix (Transfer_Input'Range (1),
+                               Transfer_Input'Range (2));
+      begin
+         for I in Transfer_Input'Range (1) loop
+            Output (I, Integer'First) :=
+               Layer.Transfer_Functions (I)(Transfer_Input
+                                                (I, Integer'First));
          end loop;
-
-         Sum := Sum + Layer.Bias (Neuron_Index);
-         Output (Neuron_Index, Integer'First) :=
-            Layer.Transfer_Functions (Neuron_Index)(Sum);
-      end loop;
-
-      return Output;
-
+         return Output;
+      end;
    end Fire;
 
    --------------------

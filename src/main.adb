@@ -2,7 +2,7 @@
 --                                                             --
 -- Ada Neural Network Test Program                             --
 --                                                             --
--- Copyright (c) 2016, John Leimon                             --
+-- Copyright (c) 2016, 2017 John Leimon                        --
 --                                                             --
 -- Permission to use, copy, modify, and/or distribute          --
 -- this software for any purpose with or without fee           --
@@ -38,6 +38,30 @@ procedure Main is
    use NN.Math.Super_Matrixes;
 
    DEBUG   : constant Boolean := False; -- Prints full debug info --
+
+   --------------
+   -- Equalish --
+   --------------
+
+   function Equalish
+      (A : Long_Long_Float;
+       B : Long_Long_Float)
+       return Boolean;
+   -- This function is used to ignore floating point errors --
+   -- when validating unit tests.                           --
+
+   function Equalish
+      (A : Long_Long_Float;
+       B : Long_Long_Float)
+       return Boolean
+   is
+   begin
+      if abs (A - B) > 0.0000000000001 then
+         return False;
+      else
+         return True;
+      end if;
+   end Equalish;
 
    --------------------------
    -- Register_Test_Result --
@@ -117,8 +141,8 @@ procedure Main is
          Output : Real_Matrix := Fire (Test_Layer, Input.all);
       begin
          -- Evaluate output --
-         if Output (Integer'First,     Integer'First) = 0.75 and
-            Output (Integer'First + 1, Integer'First) = 0.75
+         if Equalish (Output (Integer'First, Integer'First), 0.75) and
+            Equalish (Output (Integer'First + 1, Integer'First), 0.75)
          then
             Test_Result := True;
          end if;
@@ -169,17 +193,20 @@ procedure Main is
 
    procedure Test_Fire_Neural_Layer
    is
-      Bias        : aliased Float_Array :=  (0.1, -0.06);
+      Bias        : aliased Real_Matrix :=
+                     ((Integer'First =>  0.1),
+                      (Integer'First => -0.06));
       -- Two Neurons, Three Weights --
-      Weights     : aliased Real_Matrix := ((0.5, 0.5, 0.5),
-                                            (0.7, 0.1, 0.9));
-      Input       : Real_Matrix
-                    := ((Integer'First => 0.1),
-                        (Integer'First => 0.2),
-                        (Integer'First => 0.3));
-      Transfer    : aliased Transfer_Function_Array
-                            := (satlin'Access,
-                                satlin'Access);
+      Weights     : aliased Real_Matrix :=
+                     ((0.5, 0.5, 0.5),
+                      (0.7, 0.1, 0.9));
+      Input       : Real_Matrix :=
+                     ((Integer'First => 0.1),
+                      (Integer'First => 0.2),
+                      (Integer'First => 0.3));
+      Transfer    : aliased Transfer_Function_Array :=
+                     (satlin'Access,
+                      satlin'Access);
       Layer       : Neural_Layer;
       Test_Name   : String  := "Fire Neural Network Layer";
       Test_Result : Boolean := False;
@@ -211,8 +238,8 @@ procedure Main is
          Output : Real_Matrix := Fire (Layer, Input);
       begin
          -- Evaluate output --
-         if Output (Integer'First, Integer'First)     = 0.4 and
-            Output (Integer'First + 1, Integer'First) = 0.3
+         if Equalish (Output (Integer'First, Integer'First), 0.4) and
+            Equalish (Output (Integer'First + 1, Integer'First), 0.3)
          then
             Test_Result := True;
          end if;
@@ -267,7 +294,7 @@ procedure Main is
          Output : Real_Matrix := Fire (Network, Input);
       begin
          if Output (Integer'First + 0, Integer'First) > 0.0 and
-            Output (Integer'First + 1, Integer'First) = 0.0
+            Equalish (Output (Integer'First + 1, Integer'First), 0.0)
          then
             Test_Result := True;
          end if;
@@ -353,7 +380,7 @@ begin
 
    Test_Create_Layer;
    Test_Fire_Neural_Layer;
-   --  Test_Fire_Hamming_Network;
+   Test_Fire_Hamming_Network;
    Test_PseudoInverse;
    Test_Gradient;
    Test_Conjugate_Gradient;
