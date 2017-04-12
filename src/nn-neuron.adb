@@ -310,12 +310,22 @@ package body NN.Neuron is
    ----------
 
    function Fire
-      (Network : in  Neural_Network;
-       Input   : in  Real_Matrix)
-       return Real_Matrix
+     (Network : in  Neural_Network;
+      Input   : in  Real_Matrix)
+      return Real_Matrix_Access_Array
    is
+      Output : Real_Matrix_Access_Array (Network'Range);
    begin
-      return Recursive_Fire (Network, Input, Network'First);
+      for S in Network'Range loop
+         Output (S) := Create_Real_Matrix
+                           (Network (S).Bias'Length (1), 1);
+         if S = Network'First then
+            Output (S).all := Fire (Network (S), Input);
+         else
+            Output (S).all := Fire (Network (S), Output (S - 1).all);
+         end if;
+      end loop;
+      return Output;
    end Fire;
 
    ----------------------------

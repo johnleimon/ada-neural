@@ -33,7 +33,7 @@ package NN.Math is
    type Float_Array_Access is access all Float_Array;
    type Real_Matrix_Access is access all Real_Matrix;
 
-   type Real_Matrix_Access_Array is array (Natural range <>)
+   type Real_Matrix_Access_Array is array (Integer range <>)
         of Real_Matrix_Access;
 
    procedure Free is new Ada.Unchecked_Deallocation

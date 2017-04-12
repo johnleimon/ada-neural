@@ -58,39 +58,39 @@ package NN.Neuron is
        Transfer          : Transfer_Function;
        Input_Weights     : Real_Matrix_Access;
        Bias              : Long_Long_Float := 0.0) return Neural_Layer
-       with
-       Pre =>
-          Number_Of_Neurons > 0
-          and
-          Number_Of_Inputs > 0,
-       Post =>
-          Create_Layer'Result.Weights'Length (1) =
-          Create_Layer'Result.Bias'Length (1)
-          and
-          Create_Layer'Result.Weights'Length (1) =
-          Create_Layer'Result.Transfer_Functions'Length
-          and
-          Create_Layer'Result.Weights'First (1) =
-          Create_Layer'Result.Transfer_Functions'First;
+   with
+   Pre =>
+      Number_Of_Neurons > 0
+      and
+      Number_Of_Inputs > 0,
+   Post =>
+      Create_Layer'Result.Weights'Length (1) =
+      Create_Layer'Result.Bias'Length (1)
+      and
+      Create_Layer'Result.Weights'Length (1) =
+      Create_Layer'Result.Transfer_Functions'Length
+      and
+      Create_Layer'Result.Weights'First (1) =
+      Create_Layer'Result.Transfer_Functions'First;
 
    function Create_Layer_Random
       (Number_Of_Neurons : Natural;
        Number_Of_Inputs  : Natural;
        Transfer          : Transfer_Function) return Neural_Layer
-       with
-       Pre =>
-          Number_Of_Neurons > 0
-          and
-          Number_Of_Inputs > 0,
-       Post =>
-          Create_Layer_Random'Result.Weights'Length (1) =
-          Create_Layer_Random'Result.Bias'Length (1)
-          and
-          Create_Layer_Random'Result.Weights'Length (1) =
-          Create_Layer_Random'Result.Transfer_Functions'Length
-          and
-          Create_Layer_Random'Result.Weights'First (1) =
-          Create_Layer_Random'Result.Transfer_Functions'First;
+   with
+   Pre =>
+      Number_Of_Neurons > 0
+      and
+      Number_Of_Inputs > 0,
+   Post =>
+      Create_Layer_Random'Result.Weights'Length (1) =
+      Create_Layer_Random'Result.Bias'Length (1)
+      and
+      Create_Layer_Random'Result.Weights'Length (1) =
+      Create_Layer_Random'Result.Transfer_Functions'Length
+      and
+      Create_Layer_Random'Result.Weights'First (1) =
+      Create_Layer_Random'Result.Transfer_Functions'First;
    -- Creates a layer with neurons that have biases and weights --
    -- with random numbers between 0.0 and 0.99999               --
 
@@ -114,32 +114,32 @@ package NN.Neuron is
       (Layer  : Neural_Layer;
        Input  : Real_Matrix)
        return Real_Matrix
-       with Pre =>
-         Layer.Weights'Length (2) = Input'Length (1)
-         -- Number of input weights (columns in Weights)       --
-         -- shall be equal to number of inputs (rows in Input) --
-         and
-         Layer.Weights'Length (1) = Layer.Bias'Length (1)
-         -- Number of neurons (rows in Weights) shall be equal --
-         -- to number of bias values                           --
-         and
-         Layer.Weights'Length (1) =
-         Layer.Transfer_Functions'Length
-         -- Number of neurons (rows in Weights) shall be equal --
-         -- to number of transfer functions                    --
-         and
-         Layer.Weights'First (1) = Layer.Transfer_Functions'First,
-         -- First index of rows in weights shall be equal to   --
-         -- first index of Transfer_Functions                  --
-         Post =>
-         Fire'Result'Length (1) = Layer.Weights'Length (1);
-         -- The number of outputs (rows in result) shall be    --
-         -- equal to the number of neurons (rows in Weights)   --
+   with Pre =>
+     Layer.Weights'Length (2) = Input'Length (1)
+     -- Number of input weights (columns in Weights)       --
+     -- shall be equal to number of inputs (rows in Input) --
+     and
+     Layer.Weights'Length (1) = Layer.Bias'Length (1)
+     -- Number of neurons (rows in Weights) shall be equal --
+     -- to number of bias values                           --
+     and
+     Layer.Weights'Length (1) =
+     Layer.Transfer_Functions'Length
+     -- Number of neurons (rows in Weights) shall be equal --
+     -- to number of transfer functions                    --
+     and
+     Layer.Weights'First (1) = Layer.Transfer_Functions'First,
+     -- First index of rows in weights shall be equal to   --
+     -- first index of Transfer_Functions                  --
+     Post =>
+     Fire'Result'Length (1) = Layer.Weights'Length (1);
+     -- The number of outputs (rows in result) shall be    --
+     -- equal to the number of neurons (rows in Weights)   --
 
    function Fire
       (Network : Neural_Network;
        Input   : Real_Matrix)
-       return Real_Matrix;
+       return Real_Matrix_Access_Array;
 
    function Fire
       (Network : Hamming_Network;
