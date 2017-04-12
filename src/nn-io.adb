@@ -86,8 +86,10 @@ package body NN.IO is
 
    procedure Put (Matrix_Array : Real_Matrix_Access_Array)
    is
+      Layer : Natural := 1;
    begin
       for I in Matrix_Array'Range loop
+         Put_Line (Natural'Image(I) & ":");
          Put (Matrix_Array (I).all);
       end loop;
    end Put;
