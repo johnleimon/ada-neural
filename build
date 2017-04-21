@@ -1,0 +1,8 @@
+#!/bin/bash
+
+set -x
+
+gnatmake -g -gnatW8 -gnata -gnaty -gnat2012 src/main.adb
+rm b~*
+rm *.o
+rm *.ali

@@ -1,5 +1,0 @@
-#!/bin/bash
-
-set -x
-
-gnatmake -g -gnatW8 -gnata -gnaty -gnat2012 main.adb
