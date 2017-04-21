@@ -137,11 +137,6 @@ package NN.Neuron is
      -- equal to the number of neurons (rows in Weights)   --
 
    function Fire
-      (Network : Neural_Network;
-       Input   : Real_Matrix)
-       return Real_Matrix_Access_Array;
-
-   function Fire
       (Network : Hamming_Network;
        Input   : Real_Matrix)
        return Real_Matrix;
